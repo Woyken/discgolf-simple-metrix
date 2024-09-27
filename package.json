@@ -1,0 +1,39 @@
+{
+  "name": "discgolf-simple-metrix",
+  "type": "module",
+  "scripts": {
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start"
+  },
+  "dependencies": {
+    "@solidjs/router": "^0.14.1",
+    "@solidjs/start": "^1.0.6",
+    "@tanstack/solid-form": "^0.33.0",
+    "@tanstack/solid-query": "^5.56.2",
+    "@tanstack/solid-table": "^8.20.5",
+    "@tanstack/valibot-form-adapter": "^0.33.0",
+    "autoprefixer": "^10.4.19",
+    "jsdom": "^25.0.1",
+    "postcss": "^8.4.38",
+    "solid-js": "^1.8.18",
+    "tailwindcss": "^3.4.3",
+    "valibot": "^0.42.1",
+    "vinxi": "^0.4.1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.10.0",
+    "@total-typescript/ts-reset": "^0.6.1",
+    "@types/eslint-config-prettier": "^6.11.3",
+    "@types/eslint__js": "^8.42.3",
+    "@types/jsdom": "^21.1.7",
+    "daisyui": "^4.12.10",
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.5.0"
+  }
+}
