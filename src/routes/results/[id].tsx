@@ -6,9 +6,10 @@ import {
   flexRender,
   getCoreRowModel,
 } from "@tanstack/solid-table";
-import { createMemo, Show, Suspense } from "solid-js";
+import { createMemo, Show } from "solid-js";
 import { discGolfMetrixViewResults } from "~/apiWrapper/viewResults";
 import { PlayerAvatar, PlayerAvatarFromName } from "~/components/playerAvatar";
+import { QueryBoundary } from "~/components/queryBoundary";
 
 function useResultsQuery(id: string) {
   return createQuery(() => ({
@@ -17,6 +18,7 @@ function useResultsQuery(id: string) {
       const result = await discGolfMetrixViewResults(id);
       return result;
     },
+    throwOnError: true,
   }));
 }
 
@@ -29,17 +31,28 @@ type TableColumns = {
 };
 
 export default function TodoLoaderPage() {
+  const params = useParams<{ id: string }>();
+  const resultsQuery = useResultsQuery(params.id);
   return (
-    <Suspense fallback={<div>LOADING...</div>}>
-      <ResultsPage />
-    </Suspense>
+    // <Show when={resultsQuery.data}>
+    //   {(results) => <ResultsPage results={results()} />}
+    // </Show>
+    <QueryBoundary
+      query={resultsQuery}
+      loadingFallback={<div>Loading in suspense boundary</div>}
+    >
+      {(results) => <ResultsPage results={results} />}
+    </QueryBoundary>
+    // <Suspense fallback={<div>LOADING...</div>}>
+    // <Show when={a()}>{(results) => <ResultsPage results={results()} />}</Show>
+
+    // </Suspense>
   );
 }
 
-function ResultsPage() {
-  const params = useParams<{ id: string }>();
-  const resultsQuery = useResultsQuery(params.id);
-
+function ResultsPage(props: {
+  results: Awaited<ReturnType<typeof discGolfMetrixViewResults>>;
+}) {
   const columnHelper = createColumnHelper<TableColumns>();
 
   const columns = createMemo(() => [
@@ -72,7 +85,7 @@ function ResultsPage() {
     columnHelper.group({
       header: "Holes",
       columns: [
-        ...(resultsQuery.data?.holesParList ?? []).map((_, index) =>
+        ...(props.results.holesParList ?? []).map((_, index) =>
           columnHelper.accessor("scores", {
             header: `${index + 1}`,
             cell: (ctx) => {
@@ -99,7 +112,7 @@ function ResultsPage() {
 
   const tableData = createMemo(
     () =>
-      resultsQuery.data?.players.map(
+      props.results.players.map(
         (player) =>
           ({
             get diff() {
@@ -107,8 +120,7 @@ function ResultsPage() {
                 (prev: number, curr, currentIndex) => {
                   if (curr === undefined) return prev;
                   const holeDiff =
-                    curr -
-                    (resultsQuery.data.holesParList?.[currentIndex] ?? 0);
+                    curr - (props.results.holesParList?.[currentIndex] ?? 0);
                   return prev + holeDiff;
                 },
                 0

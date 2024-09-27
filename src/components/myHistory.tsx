@@ -1,4 +1,4 @@
-import { A } from "@solidjs/router";
+import { A, cache } from "@solidjs/router";
 import { createInfiniteQuery } from "@tanstack/solid-query";
 import {
   createColumnHelper,
@@ -25,7 +25,10 @@ function useMyHistoryQuery() {
   return createInfiniteQuery(() => ({
     queryKey: ["myCompetitionsList"],
     queryFn: async (context) => {
-      const result = await discGolfMetrixGetCompetitionsList(context.pageParam);
+      const result = await cache(
+        () => discGolfMetrixGetCompetitionsList(context.pageParam),
+        "cac"
+      )();
       return result;
     },
     initialPageParam: undefined as

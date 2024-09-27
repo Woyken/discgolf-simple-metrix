@@ -1,10 +1,10 @@
 import { getCookie } from "vinxi/http";
 import { getDomParser } from "./domParser";
-import { redirect } from "@solidjs/router";
+import { cache, redirect } from "@solidjs/router";
 import { z } from "vinxi";
 import { discGolfMetrixUrl } from "./urlBase";
 
-export async function discGolfMetrixGetPlayer(playerIdMaybe: number) {
+export const discGolfMetrixGetPlayer = cache(async (playerIdMaybe: number) => {
   "use server";
   const playerId = z.number().parse(playerIdMaybe);
   const token = getCookie("token");
@@ -37,8 +37,7 @@ export async function discGolfMetrixGetPlayer(playerIdMaybe: number) {
     profilePictureUrl,
     playerName,
   };
-}
-
+}, "getPlayer");
 function getProfilePictureUrl(profilePictureEl: Element) {
   if (
     !!profilePictureEl?.classList.contains("no-face") ||
