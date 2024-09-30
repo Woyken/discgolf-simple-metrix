@@ -4,6 +4,11 @@ import { cache, redirect } from "@solidjs/router";
 import { z } from "vinxi";
 import { discGolfMetrixUrl } from "./urlBase";
 
+// TODO Faster endpoint to find player and it's avatar image:
+// https://discgolfmetrix.com/?u=player_stat&value=karolis%20uz
+// And request
+// https://discgolfmetrix.com/find_user_server.php?value=karolis%20uz
+
 export const discGolfMetrixGetPlayer = cache(async (playerIdMaybe: number) => {
   "use server";
   const playerId = z.number().parse(playerIdMaybe);
