@@ -26,6 +26,9 @@ importers:
       '@tanstack/valibot-form-adapter':
         specifier: ^0.33.0
         version: 0.33.0(valibot@0.42.1(typescript@5.6.2))
+      '@valibot/valibot':
+        specifier: npm:@jsr/valibot__valibot@^0.42.1
+        version: '@jsr/valibot__valibot@0.42.1'
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.20(postcss@8.4.47)
@@ -41,9 +44,6 @@ importers:
       tailwindcss:
         specifier: ^3.4.3
         version: 3.4.11
-      valibot:
-        specifier: ^0.42.1
-        version: 0.42.1(typescript@5.6.2)
       vinxi:
         specifier: ^0.4.1
         version: 0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)
@@ -538,6 +538,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@jsr/valibot__valibot@0.42.1':
+    resolution: {integrity: sha512-JjIzyXUQTkmTbiDXUJoFHDigviK12MUd69lGA28fGuhfivzvFv8TgPxkfH3I0wL0skCc5Rl5+g1IFnwYwVZWRw==, tarball: https://npm.jsr.io/~/11/@jsr/valibot__valibot/0.42.1.tgz}
 
   '@mapbox/node-pre-gyp@1.0.11':
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
@@ -3545,6 +3548,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@jsr/valibot__valibot@0.42.1': {}
 
   '@mapbox/node-pre-gyp@1.0.11':
     dependencies:
