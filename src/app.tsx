@@ -112,8 +112,8 @@ export default function App() {
     <Router
       root={(props) => (
         <>
-          <Nav />
           <QueryClientProvider client={new QueryClient()}>
+            <Nav />
             {/* <UserTokenProvider> */}
             <Suspense fallback={<div>ROUTER FALLBACK</div>}>
               {props.children}

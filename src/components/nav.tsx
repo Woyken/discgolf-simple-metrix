@@ -1,13 +1,22 @@
 // import { useLocation } from "@solidjs/router";
 
 import { A } from "@solidjs/router";
+import { createQuery } from "@tanstack/solid-query";
+import { Show, Suspense } from "solid-js";
+import { discGolfMetrixGetAccountSettings } from "~/apiWrapper/getAccountSettings";
+
+const useSettingsQuery = () => {
+  return createQuery(() => ({
+    queryKey: ["settings"],
+    queryFn: async () => {
+      const result = await discGolfMetrixGetAccountSettings();
+      return result;
+    },
+  }));
+};
 
 export default function Nav() {
-  // const location = useLocation();
-  // const active = (path: string) =>
-  //   path == location.pathname
-  //     ? "border-sky-600"
-  //     : "border-transparent hover:border-sky-600";
+  const settingsQuery = useSettingsQuery();
   return (
     <div class="navbar bg-base-100">
       <div class="flex-none">
@@ -52,13 +61,24 @@ export default function Nav() {
           <div
             tabindex="0"
             role="button"
-            class="btn btn-ghost btn-circle avatar"
+            class="btn btn-ghost btn-circle avatar placeholder"
           >
             <div class="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+              <Suspense
+                fallback={<span class="loading loading-ring loading-lg" />}
+              >
+                <Show
+                  when={settingsQuery.data?.imageUrl}
+                  fallback={
+                    <span>
+                      {settingsQuery.data?.firstName?.[0].toUpperCase() ?? "F"}
+                      {settingsQuery.data?.lastName?.[0].toUpperCase() ?? "L"}
+                    </span>
+                  }
+                >
+                  {(url) => <img alt="User avatar" src={url().href} />}
+                </Show>
+              </Suspense>
             </div>
           </div>
           <ul

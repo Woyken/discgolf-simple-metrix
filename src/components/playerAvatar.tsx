@@ -2,7 +2,7 @@ import { createQuery } from "@tanstack/solid-query";
 import { Accessor, createMemo, Match, Suspense, Switch } from "solid-js";
 import { discGolfMetrixGetPlayer } from "~/apiWrapper/player";
 
-function usePlayer(id: Accessor<number>) {
+function usePlayerQuery(id: Accessor<number>) {
   return createQuery(() => ({
     queryKey: ["playerData", id()],
     queryFn: async () => {
@@ -46,7 +46,7 @@ function PlayerAvatarFromNameBody(props: { playerName: string }) {
 }
 
 function PlayerAvatarWithQuery(props: { playerId: number }) {
-  const playerQuery = usePlayer(() => props.playerId);
+  const playerQuery = usePlayerQuery(() => props.playerId);
 
   return (
     <Switch>
