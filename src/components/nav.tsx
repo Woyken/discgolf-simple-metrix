@@ -28,7 +28,9 @@ export default function Nav() {
         </button>
       </div>
       <div class="flex-1">
-        <a class="btn btn-ghost text-xl">daisyUI</a>
+        <A href="/" class="btn btn-ghost text-xl">
+          Disc Golf Metrix
+        </A>
       </div>
       <div class="flex-none">
         <button class="btn btn-square btn-ghost">
