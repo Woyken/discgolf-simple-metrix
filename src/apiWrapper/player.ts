@@ -1,7 +1,7 @@
 import { getCookie } from "vinxi/http";
 import { getDomParser } from "./domParser";
 import { cache, redirect } from "@solidjs/router";
-import { z } from "vinxi";
+import { number, parse } from "@valibot/valibot";
 import { discGolfMetrixUrl } from "./urlBase";
 
 // TODO Faster endpoint to find player and it's avatar image:
@@ -11,7 +11,7 @@ import { discGolfMetrixUrl } from "./urlBase";
 
 export const discGolfMetrixGetPlayer = cache(async (playerIdMaybe: number) => {
   "use server";
-  const playerId = z.number().parse(playerIdMaybe);
+  const playerId = parse(number(), playerIdMaybe);
   const token = getCookie("token");
   if (!token) throw redirect("/login");
 
