@@ -1,7 +1,7 @@
 import { getCookie } from "vinxi/http";
 import { getDomParser } from "./domParser";
 import { cache, redirect } from "@solidjs/router";
-import { number, parse } from "@valibot/valibot";
+import { number, parse } from "valibot";
 import { discGolfMetrixUrl } from "./urlBase";
 
 // TODO Faster endpoint to find player and it's avatar image:

@@ -2,7 +2,7 @@ import { useNavigate } from "@solidjs/router";
 import { createForm, FieldApi } from "@tanstack/solid-form";
 import { createMutation } from "@tanstack/solid-query";
 import { valibotValidator } from "@tanstack/valibot-form-adapter";
-import { email, minLength, pipe, string } from "@valibot/valibot";
+import { email, minLength, pipe, string } from "valibot";
 import { discGolfMetrixLogin } from "~/apiWrapper/login";
 
 function useLoginMutation() {
