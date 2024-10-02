@@ -1,8 +1,8 @@
 // import { useLocation } from "@solidjs/router";
 
-import { A } from "@solidjs/router";
+import { A, useLocation } from "@solidjs/router";
 import { createQuery } from "@tanstack/solid-query";
-import { Show, Suspense } from "solid-js";
+import { createMemo, Show, Suspense } from "solid-js";
 import { discGolfMetrixGetAccountSettings } from "~/apiWrapper/getAccountSettings";
 
 const useSettingsQuery = () => {
@@ -15,7 +15,17 @@ const useSettingsQuery = () => {
   }));
 };
 
-export default function Nav() {
+export default function NavHandleLogin() {
+  const location = useLocation();
+  const isLoggedIn = createMemo(() => location.pathname !== "/login");
+  return (
+    <Show when={isLoggedIn()}>
+      <Nav />
+    </Show>
+  );
+}
+
+function Nav() {
   const settingsQuery = useSettingsQuery();
   return (
     <div class="navbar bg-base-100">
