@@ -10,8 +10,15 @@ import {
   Suspense,
   useContext,
 } from "solid-js";
+import { isServer } from "solid-js/web";
 import Nav from "~/components/nav";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
+import {
+  ColorModeProvider,
+  ColorModeScript,
+  cookieStorageManagerSSR,
+} from "@kobalte/core";
+import { getCookie } from "vinxi/http";
 
 import "./app.css";
 
@@ -107,18 +114,30 @@ import "./app.css";
 //   );
 // }
 
+function getServerCookies() {
+  "use server";
+  const colorMode = getCookie("kb-color-mode");
+  return colorMode ? `kb-color-mode=${colorMode}` : "";
+}
+
 export default function App() {
+  const storageManager = cookieStorageManagerSSR(
+    isServer ? getServerCookies() : document.cookie
+  );
   return (
     <Router
       root={(props) => (
         <>
           <QueryClientProvider client={new QueryClient()}>
-            <Nav />
-            {/* <UserTokenProvider> */}
-            <Suspense fallback={<div>ROUTER FALLBACK</div>}>
-              {props.children}
-            </Suspense>
-            {/* </UserTokenProvider> */}
+            <ColorModeScript storageType={storageManager.type} />
+            <ColorModeProvider storageManager={storageManager}>
+              <Nav />
+              {/* <UserTokenProvider> */}
+              <Suspense fallback={<div>ROUTER FALLBACK</div>}>
+                {props.children}
+              </Suspense>
+              {/* </UserTokenProvider> */}
+            </ColorModeProvider>
           </QueryClientProvider>
         </>
       )}
