@@ -1,3 +1,3 @@
 # Disc Golf Simple Metrix
 
-Alternative UI for <https://discgolfmetrix>
+Alternative UI for <https://discgolfmetrix.com>
