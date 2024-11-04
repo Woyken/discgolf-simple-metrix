@@ -61,6 +61,23 @@ function RenderMapWithCourseData(props: {
     map().setCenter({ lat: centerLat, lng: centerLng });
   });
 
+  const locationButton = (
+    <button
+      onclick={() => {
+        navigator.geolocation.getCurrentPosition((loc) => {
+          // TODO draw blue circle
+          navigator.geolocation.watchPosition(() => {
+            // example: https://medium.com/100-days-in-kyoto-to-create-a-web-app-with-google/day-14-tracking-user-location-on-embedded-google-maps-c93775ac35ab
+          });
+        });
+      }}
+    >
+      Track my location
+    </button>
+  ) as HTMLElement;
+
+  map().controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+
   const infoWindow = createMemo(() => {
     return new google.maps.InfoWindow();
   });
