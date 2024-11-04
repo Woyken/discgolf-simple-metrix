@@ -1,17 +1,102 @@
-import { createMemo } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  onCleanup,
+  Show,
+  Suspense,
+  untrack,
+} from "solid-js";
 import { useGoogleMapsMapsLibrary } from "./mapsLibraryProvider";
+import { createQuery } from "@tanstack/solid-query";
+import { getCourseMapDataQueryOptions } from "./query/query";
 
-export function GoogleMapsRender() {
+export function GoogleMapsRender(props: { courseId: string }) {
+  const query = createQuery(() => getCourseMapDataQueryOptions(props.courseId));
+
+  return (
+    <Suspense fallback={<div>LOADING MAP DATA</div>}>
+      <Show when={query.data} fallback={<div>LOADING MAP DATA</div>}>
+        {(data) => <RenderMapWithCourseData data={data()} />}
+      </Show>
+    </Suspense>
+  );
+}
+
+function RenderMapWithCourseData(props: {
+  data: ReturnType<
+    NonNullable<ReturnType<typeof getCourseMapDataQueryOptions>["select"]>
+  >;
+}) {
   const lib = useGoogleMapsMapsLibrary();
+
   const mapContainer = (
-    <div style={{ width: "500px", height: "500px" }} />
+    <div
+      class="[&_.gm-style-iw]:bg-base-100 [&_.gm-style-iw-tc]:after:bg-base-100"
+      style={{ width: "500px", height: "500px" }}
+    />
   ) as HTMLDivElement;
 
   const map = createMemo(() => {
+    const [centerLat, centerLng] = untrack(() =>
+      props.data.CenterCoordinates.split(",")
+        .map((x) => x.trim())
+        .map((x) => parseFloat(x))
+    );
     return new lib.mapsLibrary.Map(mapContainer, {
-      center: { lat: -34.397, lng: 150.644 },
-      zoom: 8,
+      center: { lat: centerLat, lng: centerLng },
+      zoom: 18,
+      mapTypeId: google.maps.MapTypeId.SATELLITE,
+      mapTypeControlOptions: {
+        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+        position: google.maps.ControlPosition.INLINE_END_BLOCK_START,
+        mapTypeIds: [],
+      },
+      fullscreenControl: true,
+      colorScheme: google.maps.ColorScheme.DARK,
     });
+  });
+  createEffect(() => {
+    const [centerLat, centerLng] = props.data.CenterCoordinates.split(",").map(
+      (x) => parseFloat(x)
+    );
+    map().setCenter({ lat: centerLat, lng: centerLng });
+  });
+
+  const infoWindow = createMemo(() => {
+    return new google.maps.InfoWindow();
+  });
+  onCleanup(() => infoWindow().close());
+
+  createEffect(() => {
+    const tracks = props.data.Tracks;
+
+    // Draw baskets
+    for (const track of tracks) {
+      const basket = track.Basket;
+      const point = basket.split(",").map((x) => parseFloat(x));
+
+      const basketCircle = new google.maps.Circle({
+        strokeColor: "#FF6600",
+        strokeOpacity: 0.8,
+        strokeWeight: 1,
+        fillColor: "#FF6600",
+        fillOpacity: 1,
+        zIndex: 11,
+        map: map(),
+        center: new google.maps.LatLng(point[0], point[1]),
+        radius: 1,
+      });
+      const listener = basketCircle.addListener("mouseover", () => {
+        infoWindow().setPosition(basketCircle.getBounds()?.getCenter());
+        infoWindow().setHeaderContent(
+          `No ${track.NameAlt ? track.NameAlt : track.Name}`
+        );
+        infoWindow().setContent(`Par ${track.Par}<br>Length ${track.Length}m`);
+        infoWindow().open({ map: map() });
+      });
+      onCleanup(() => listener.remove());
+      onCleanup(() => basketCircle.setMap(null));
+    }
   });
 
   return <>{mapContainer}</>;

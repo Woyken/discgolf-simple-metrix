@@ -1,9 +1,11 @@
 import { useParams } from "@solidjs/router";
 import { clientOnly } from "@solidjs/start";
-import { createQuery } from "@tanstack/solid-query";
-import { Accessor, Show } from "solid-js";
-import { discGolfMetrixGetCourseMapData } from "~/apiWrapper/getCourseMapData";
-import { discGolfMetrixGetGoogleMapsKey } from "~/apiWrapper/getGoogleMapsKey";
+import { useQueryClient } from "@tanstack/solid-query";
+import { Show } from "solid-js";
+import {
+  getCourseMapDataQueryOptions,
+  useCourseMapGoogleMapsKeyQuery,
+} from "~/components/googleMaps/query/query";
 
 const RenderCourseMap = clientOnly(
   () => import("~/components/renderCourseMap")
@@ -15,37 +17,16 @@ export default function CourseMapPage() {
   return <RenderMap courseId={params.id} />;
 }
 
-function useCourseMapDataQuery(courseId: Accessor<string>) {
-  return createQuery(() => ({
-    queryKey: ["courseMapData", courseId()],
-    queryFn: async () => {
-      const result = await discGolfMetrixGetCourseMapData(courseId());
-      return result;
-    },
-    throwOnError: true,
-  }));
-}
-
-function useCourseMapGoogleMapsKeyQuery(courseId: Accessor<string>) {
-  return createQuery(() => ({
-    queryKey: ["courseMapGoogleMapsKey", courseId()],
-    queryFn: async () => {
-      const result = await discGolfMetrixGetGoogleMapsKey(courseId());
-      return result;
-    },
-    throwOnError: true,
-  }));
-}
-
 function RenderMap(props: { courseId: string }) {
-  const courseMapDataQuery = useCourseMapDataQuery(() => props.courseId);
+  const queryClient = useQueryClient();
+  queryClient.prefetchQuery(getCourseMapDataQueryOptions(props.courseId));
   const googleMapsKeyQuery = useCourseMapGoogleMapsKeyQuery(
     () => props.courseId
   );
 
   return (
     <Show when={googleMapsKeyQuery.data?.googleMapsApiKey}>
-      {(key) => <RenderCourseMap apiKey={key()} />}
+      {(key) => <RenderCourseMap apiKey={key()} courseId={props.courseId} />}
     </Show>
   );
 }
