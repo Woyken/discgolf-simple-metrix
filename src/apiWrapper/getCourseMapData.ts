@@ -20,7 +20,7 @@ type MapJsonResponse = {
     DropzonesLocation: Array<string>;
     DropzonesLine: Array<Array<string>>;
     Obs: Array<Array<string>>;
-    Fairway: Array<unknown>;
+    Fairway: Array<string>;
     Label: string;
     Test?: number;
   }>;

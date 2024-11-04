@@ -40,7 +40,7 @@ function RenderMapWithCourseData(props: {
     const [centerLat, centerLng] = untrack(() =>
       props.data.CenterCoordinates.split(",")
         .map((x) => x.trim())
-        .map((x) => parseFloat(x))
+        .map(parseFloat)
     );
     return new lib.mapsLibrary.Map(mapContainer, {
       center: { lat: centerLat, lng: centerLng },
@@ -56,9 +56,8 @@ function RenderMapWithCourseData(props: {
     });
   });
   createEffect(() => {
-    const [centerLat, centerLng] = props.data.CenterCoordinates.split(",").map(
-      (x) => parseFloat(x)
-    );
+    const [centerLat, centerLng] =
+      props.data.CenterCoordinates.split(",").map(parseFloat);
     map().setCenter({ lat: centerLat, lng: centerLng });
   });
 
@@ -70,36 +69,331 @@ function RenderMapWithCourseData(props: {
   createEffect(() => {
     const tracks = props.data.Tracks;
 
-    // Draw baskets
     for (const track of tracks) {
-      const basket = track.Basket;
-      const point = basket.split(",").map((x) => parseFloat(x));
+      const tooltipHeaderText = `No ${
+        track.NameAlt ? track.NameAlt : track.Name
+      }`;
+      const tooltipContentText = `Par ${track.Par}<br>Length ${track.Length}m`;
 
-      const basketCircle = new google.maps.Circle({
-        strokeColor: "#FF6600",
-        strokeOpacity: 0.8,
-        strokeWeight: 1,
-        fillColor: "#FF6600",
-        fillOpacity: 1,
-        zIndex: 11,
-        map: map(),
-        center: new google.maps.LatLng(point[0], point[1]),
-        radius: 1,
-      });
-      const listener = basketCircle.addListener("mouseover", () => {
-        infoWindow().setPosition(basketCircle.getBounds()?.getCenter());
-        infoWindow().setHeaderContent(
-          `No ${track.NameAlt ? track.NameAlt : track.Name}`
+      {
+        const dropZonePointsList = track.Dropzones;
+        // Draw dropZones
+        for (const dropZonePoints of dropZonePointsList) {
+          const paths = dropZonePoints
+            .map((dropZonePoint) => dropZonePoint.split(",").map(parseFloat))
+            .map(
+              (point) =>
+                new google.maps.LatLng({
+                  lat: point[0],
+                  lng: point[1],
+                })
+            );
+
+          const mapElement = new google.maps.Polygon({
+            paths,
+            map: map(),
+            strokeColor: "#969645",
+            strokeOpacity: 1,
+            strokeWeight: 0,
+            fillColor: "#CCCC33",
+            fillOpacity: 1,
+            zIndex: 1,
+          });
+          onCleanup(() => mapElement.setMap(null));
+        }
+      }
+
+      {
+        // Draw fairway
+        const fairways = track.Fairway;
+        const paths = fairways
+          .map((fairway) => fairway.split(",").map(parseFloat))
+          .map((point) => new google.maps.LatLng(point[0], point[1]));
+
+        const mapElement = new google.maps.Polygon({
+          paths,
+          map: map(),
+          strokeColor: "#FFFFFF",
+          strokeOpacity: 0,
+          strokeWeight: 0,
+          fillColor: "#FFFFFF",
+          fillOpacity: 0.2,
+          zIndex: 1,
+        });
+        const listener = mapElement.addListener("mouseover", () => {
+          infoWindow().setPosition(mapElement.getPath().getAt(0));
+          infoWindow().setHeaderContent(tooltipHeaderText);
+          infoWindow().setContent(tooltipContentText);
+          infoWindow().open({ map: map() });
+        });
+        onCleanup(() => listener.remove());
+        onCleanup(() => mapElement.setMap(null));
+      }
+
+      {
+        // Draw line
+        const line = track.LineSmooth;
+        const google_line = line
+          .map((x) => x.split(",").map(parseFloat))
+          .map((point) => new google.maps.LatLng(point[0], point[1]));
+
+        const mapElement = new google.maps.Polyline({
+          path: google_line,
+          map: map(),
+          geodesic: true,
+          strokeColor: "#FFFFFF",
+          strokeOpacity: 0.5,
+          strokeWeight: 3,
+          zIndex: 10,
+        });
+        onCleanup(() => mapElement.setMap(null));
+        const listener = mapElement.addListener(
+          "mouseover",
+          (el: { latLng: { lat: number; lng: number } }) => {
+            infoWindow().setPosition(el.latLng);
+            infoWindow().setHeaderContent(tooltipHeaderText);
+            infoWindow().setContent(tooltipContentText);
+            infoWindow().open({ map: map() });
+          }
         );
-        infoWindow().setContent(`Par ${track.Par}<br>Length ${track.Length}m`);
-        infoWindow().open({ map: map() });
-      });
-      onCleanup(() => listener.remove());
-      onCleanup(() => basketCircle.setMap(null));
+        onCleanup(() => listener.remove());
+      }
+
+      {
+        // obs
+        const obs = track.Obs;
+
+        for (const ob of obs) {
+          const path = ob
+            .map((x) => x.split(",").map(parseFloat))
+            .map((point) => new google.maps.LatLng(point[0], point[1]));
+
+          const mapElement = new google.maps.Polyline({
+            path,
+            map: map(),
+            geodesic: true,
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.5,
+            strokeWeight: 2,
+            zIndex: 10,
+          });
+          const listener = mapElement.addListener(
+            "mouseover",
+            (el: { latLng: { lat: number; lng: number } }) => {
+              infoWindow().setPosition(el.latLng);
+              infoWindow().setHeaderContent(tooltipHeaderText);
+              infoWindow().setContent(tooltipContentText);
+              infoWindow().open({ map: map() });
+            }
+          );
+          onCleanup(() => listener.remove());
+          onCleanup(() => mapElement.setMap(null));
+        }
+      }
+
+      {
+        // Draw tee
+        const tee_rectangle = track.TeeRectangle;
+        const paths = tee_rectangle
+          .map((x) => x.split(",").map(parseFloat))
+          .map((point) => new google.maps.LatLng(point[0], point[1]));
+        const mapElement = new google.maps.Polygon({
+          paths,
+          map: map(),
+          strokeColor: "#1D5430",
+          strokeOpacity: 1,
+          strokeWeight: 0,
+          fillColor: "#6ABF64",
+          fillOpacity: 1,
+          zIndex: 11,
+        });
+        onCleanup(() => mapElement.setMap(null));
+        const listener = mapElement.addListener("mouseover", () => {
+          infoWindow().setPosition(mapElement.getPath().getAt(0));
+          infoWindow().setHeaderContent(tooltipHeaderText);
+          infoWindow().setContent(tooltipContentText);
+          infoWindow().open({ map: map() });
+        });
+        onCleanup(() => listener.remove());
+      }
+
+      {
+        // Draw baskets
+        const basket = track.Basket;
+        const point = basket.split(",").map(parseFloat);
+
+        const basketEl = new google.maps.Circle({
+          strokeColor: "#FF6600",
+          strokeOpacity: 0.8,
+          strokeWeight: 1,
+          fillColor: "#FF6600",
+          fillOpacity: 1,
+          zIndex: 11,
+          map: map(),
+          center: new google.maps.LatLng(point[0], point[1]),
+          radius: 1,
+        });
+        onCleanup(() => basketEl.setMap(null));
+        const listener = basketEl.addListener("mouseover", () => {
+          infoWindow().setPosition(basketEl.getBounds()?.getCenter());
+          infoWindow().setHeaderContent(tooltipHeaderText);
+          infoWindow().setContent(tooltipContentText);
+          infoWindow().open({ map: map() });
+        });
+        onCleanup(() => listener.remove());
+
+        // 3m cicle
+        const circle3m = new google.maps.Circle({
+          strokeColor: "#669999",
+          strokeOpacity: 0,
+          strokeWeight: 1,
+          fillColor: "#669999",
+          fillOpacity: 0.4,
+          zIndex: 10,
+          map: map(),
+          center: new google.maps.LatLng(point[0], point[1]),
+          radius: 3,
+        });
+        onCleanup(() => circle3m.setMap(null));
+        {
+          const listener = circle3m.addListener("mouseover", () => {
+            infoWindow().setPosition(basketEl.getBounds()?.getCenter());
+            infoWindow().setHeaderContent(tooltipHeaderText);
+            infoWindow().setContent(tooltipContentText);
+            infoWindow().open({ map: map() });
+          });
+          onCleanup(() => listener.remove());
+        }
+
+        // 10m cicle
+        const circle10m = new google.maps.Circle({
+          strokeColor: "#669999",
+          strokeOpacity: 0,
+          strokeWeight: 1,
+          fillColor: "#669999",
+          fillOpacity: 0.4,
+          zIndex: 10,
+          map: map(),
+          center: new google.maps.LatLng(point[0], point[1]),
+          radius: 10,
+        });
+        onCleanup(() => circle10m.setMap(null));
+        {
+          const listener = circle3m.addListener("mouseover", () => {
+            infoWindow().setPosition(basketEl.getBounds()?.getCenter());
+            infoWindow().setHeaderContent(tooltipHeaderText);
+            infoWindow().setContent(tooltipContentText);
+            infoWindow().open({ map: map() });
+          });
+          onCleanup(() => listener.remove());
+        }
+
+        // labels
+        {
+          // calculate label position
+          const length_13 = parseFloat(track.Length) / 3;
+
+          const linePoints = track.LineSmooth.map((x) =>
+            x.split(",").map(parseFloat)
+          );
+          let p0Coords: [number, number] = linePoints[0] as [number, number];
+          let d = 0;
+          for (const point of linePoints.slice(1)) {
+            const [p0Lat, p0Lng] = p0Coords;
+            const [p1Lat, p1Lng] = point;
+            p0Coords = [p1Lat, p1Lng];
+            const d1 = getDistance(p0Lat, p0Lng, p1Lat, p1Lng);
+            if (d + d1 <= length_13) {
+              d = d + d1;
+              continue;
+            }
+
+            // we found the right line to place the marker with label
+            const d2 = length_13 - d;
+
+            const markerElement = new google.maps.Marker({
+              position: new google.maps.LatLng(
+                p0Lat + ((p1Lat - p0Lat) * d2) / d1,
+                p0Lng + ((p1Lng - p0Lng) * d2) / d1
+              ),
+              map: map(),
+              icon: {
+                url: "https://discgolfmetrix.com/map/img/label3.png",
+                labelOrigin: new google.maps.Point(12, 10),
+                size: new google.maps.Size(24, 20),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(12, 10),
+              },
+              label: {
+                text: track.NameAlt ? track.NameAlt : track.Name.toString(),
+                color: "#333333",
+                fontSize: "12px",
+              },
+            });
+            onCleanup(() => markerElement.setMap(null));
+            {
+              const mouseOverListener = markerElement.addListener(
+                "mouseover",
+                () => {
+                  infoWindow().setPosition(markerElement.getPosition());
+                  infoWindow().setHeaderContent(tooltipHeaderText);
+                  infoWindow().setContent(tooltipContentText);
+                  infoWindow().open({ map: map() });
+                }
+              );
+              onCleanup(() => mouseOverListener.remove());
+
+              const pointsLats = linePoints.map((x) => x[0]);
+              const pointsLngs = linePoints.map((x) => x[1]);
+              const minLat = Math.min(...pointsLats);
+              const minLng = Math.min(...pointsLngs);
+              const maxLat = Math.max(...pointsLats);
+              const maxLng = Math.max(...pointsLngs);
+              const clickListener = markerElement.addListener("click", () => {
+                map().fitBounds(
+                  new google.maps.LatLngBounds(
+                    {
+                      lat: minLat,
+                      lng: minLng,
+                    },
+                    {
+                      lat: maxLat,
+                      lng: maxLng,
+                    }
+                  )
+                );
+                infoWindow().close();
+              });
+              onCleanup(() => clickListener.remove());
+            }
+            break;
+          }
+        }
+      }
     }
   });
 
   return <>{mapContainer}</>;
+}
+
+function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1); // deg2rad below
+  const dLon = deg2rad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c * 1000; // Distance in m
+  return d;
+}
+
+function deg2rad(deg: number) {
+  return deg * (Math.PI / 180);
 }
 
 // Original script that renders the course map
