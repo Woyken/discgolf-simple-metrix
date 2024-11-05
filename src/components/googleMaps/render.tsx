@@ -1,4 +1,5 @@
 import {
+  Accessor,
   createEffect,
   createMemo,
   onCleanup,
@@ -9,6 +10,7 @@ import {
 import { useGoogleMapsMapsLibrary } from "./mapsLibraryProvider";
 import { createQuery } from "@tanstack/solid-query";
 import { getCourseMapDataQueryOptions } from "./query/query";
+import { createGeolocation } from "./createGeolocationWatcher";
 
 export function GoogleMapsRender(props: { courseId: string }) {
   const query = createQuery(() => getCourseMapDataQueryOptions(props.courseId));
@@ -20,6 +22,61 @@ export function GoogleMapsRender(props: { courseId: string }) {
       </Show>
     </Suspense>
   );
+}
+
+function useUserLocation(map: Accessor<google.maps.Map>) {
+  const userPositionMarker = createMemo(
+    () =>
+      new google.maps.Marker({
+        title: "Your location",
+        icon: {
+          strokeColor: "#000055",
+          strokeOpacity: 0.5,
+          strokeWeight: 2,
+          fillColor: "#00A0AA",
+          fillOpacity: 0.8,
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 10,
+        },
+      })
+  );
+  onCleanup(() => userPositionMarker().setMap(null));
+
+  const userPositionAccuracyMarker = createMemo(
+    () =>
+      new google.maps.Circle({
+        strokeOpacity: 0.3,
+        strokeColor: "#0000AA",
+        fillColor: "#0060AA",
+        fillOpacity: 0.18,
+        radius: 2000,
+        zIndex: 1,
+      })
+  );
+  onCleanup(() => userPositionAccuracyMarker().setMap(null));
+
+  return {
+    hide: () => {
+      [userPositionMarker(), userPositionAccuracyMarker()].forEach((x) =>
+        x.setMap(null)
+      );
+    },
+    show: () => {
+      [userPositionMarker(), userPositionAccuracyMarker()].forEach((x) =>
+        x.setMap(map())
+      );
+    },
+    setPosition: (loc: { lat: number; lng: number }) => {
+      [userPositionMarker(), userPositionAccuracyMarker()].forEach((x) =>
+        "setCenter" in x
+          ? x.setCenter({ lat: loc.lat, lng: loc.lng })
+          : x.setPosition({ lat: loc.lat, lng: loc.lng })
+      );
+    },
+    setAccuracy: (num: number) => {
+      userPositionAccuracyMarker().setRadius(num);
+    },
+  };
 }
 
 function RenderMapWithCourseData(props: {
@@ -36,15 +93,23 @@ function RenderMapWithCourseData(props: {
     />
   ) as HTMLDivElement;
 
+  const allLocationsBounds = createMemo(() => {
+    const allLocationsBounds = new google.maps.LatLngBounds();
+    props.data.Tracks.flatMap((x) => x)
+      .flatMap((x) => {
+        const basket = x.Basket.split(",").map(parseFloat);
+        const lines = x.LineSmooth.map((x) => x.split(",").map(parseFloat));
+        return [
+          { lat: basket[0], lng: basket[1] },
+          ...lines.map((x) => ({ lat: x[0], lng: x[1] })),
+        ];
+      })
+      .forEach((x) => allLocationsBounds.extend(x));
+    return allLocationsBounds;
+  });
+
   const map = createMemo(() => {
-    const [centerLat, centerLng] = untrack(() =>
-      props.data.CenterCoordinates.split(",")
-        .map((x) => x.trim())
-        .map(parseFloat)
-    );
     return new lib.mapsLibrary.Map(mapContainer, {
-      center: { lat: centerLat, lng: centerLng },
-      zoom: 18,
       mapTypeId: google.maps.MapTypeId.SATELLITE,
       mapTypeControlOptions: {
         style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
@@ -56,23 +121,33 @@ function RenderMapWithCourseData(props: {
     });
   });
   createEffect(() => {
-    const [centerLat, centerLng] =
-      props.data.CenterCoordinates.split(",").map(parseFloat);
-    map().setCenter({ lat: centerLat, lng: centerLng });
+    map().fitBounds(
+      untrack(() => allLocationsBounds()),
+      0
+    );
+  });
+
+  const userLocationMarker = useUserLocation(map);
+
+  const [location, locationError, refetch] = createGeolocation(() => ({
+    enableHighAccuracy: true,
+    maximumAge: 10000,
+  }));
+
+  createEffect(() => {
+    const pos = location();
+    if (!pos) return;
+    userLocationMarker.show();
+    userLocationMarker.setPosition({
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+    });
+    userLocationMarker.setAccuracy(pos.coords.accuracy);
   });
 
   const locationButton = (
-    <button
-      onclick={() => {
-        navigator.geolocation.getCurrentPosition((loc) => {
-          // TODO draw blue circle
-          navigator.geolocation.watchPosition(() => {
-            // example: https://medium.com/100-days-in-kyoto-to-create-a-web-app-with-google/day-14-tracking-user-location-on-embedded-google-maps-c93775ac35ab
-          });
-        });
-      }}
-    >
-      Track my location
+    <button classList={{ hidden: !!location() }} onclick={refetch}>
+      Show my location
     </button>
   ) as HTMLElement;
 

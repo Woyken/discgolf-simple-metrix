@@ -11,7 +11,7 @@ const ctx = createContext<{ mapsLibrary: google.maps.MapsLibrary }>();
 
 export function useGoogleMapsMapsLibrary() {
   const value = useContext(ctx);
-  if (!value) throw new Error("Missing GoogleMapsLoaderProvider");
+  if (!value) throw new Error("Missing GoogleMapsMapsLibraryProvider");
   return value;
 }
 
