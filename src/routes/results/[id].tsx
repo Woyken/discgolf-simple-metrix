@@ -10,6 +10,13 @@ import { createMemo, Show } from "solid-js";
 import { discGolfMetrixViewResults } from "~/apiWrapper/viewResults";
 import { PlayerAvatar, PlayerAvatarFromName } from "~/components/playerAvatar";
 import { QueryBoundary } from "~/components/queryBoundary";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from "~/components/ui/breadcrumb";
 
 function useResultsQuery(id: string) {
   return createQuery(() => ({
@@ -154,6 +161,23 @@ function ResultsPage(props: {
   return (
     <main class="text-center mx-auto p-4">
       <div class="h-full w-full pb-6 bg-base-100">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/courses/${props.results.courseId}`}>
+                {props.results.courseName}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink current>Breadcrumb</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <div class="overflow-x-auto w-full">
           <table class="table w-full">
             <thead>

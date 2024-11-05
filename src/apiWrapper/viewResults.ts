@@ -27,6 +27,15 @@ export const discGolfMetrixViewResults = cache(
     const DOMParser = await getDomParser();
     const parser = new DOMParser();
     const parsedHtml = parser.parseFromString(text, "text/html");
+    const courseLinkEl = [
+      ...parsedHtml.querySelectorAll(".main-header a"),
+    ].filter((x) => x.getAttribute("href")?.startsWith("/course/"))[0];
+
+    const courseId = courseLinkEl.getAttribute("href")?.split("/").at(-1);
+    const courseName = courseLinkEl.textContent;
+    if (courseId === undefined) throw new Error("courseId not found");
+    if (courseName === null) throw new Error("courseName not found");
+
     const table = parsedHtml.getElementById("id_results");
     if (!table) throw new Error("Table not found");
     const rows = table.querySelectorAll(":scope > tbody > tr");
@@ -83,6 +92,8 @@ export const discGolfMetrixViewResults = cache(
     return {
       holesParList,
       players,
+      courseId,
+      courseName,
     };
   },
   "viewResults"
