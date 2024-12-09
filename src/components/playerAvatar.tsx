@@ -1,6 +1,7 @@
 import { createQuery } from "@tanstack/solid-query";
 import { Accessor, createMemo, Match, Suspense, Switch } from "solid-js";
 import { discGolfMetrixGetPlayer } from "~/apiWrapper/player";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 function usePlayerQuery(id: Accessor<number>) {
   return createQuery(() => ({
@@ -14,7 +15,7 @@ function usePlayerQuery(id: Accessor<number>) {
 
 export function PlayerAvatar(props: { playerId: number; playerName?: string }) {
   return (
-    <div class="avatar placeholder">
+    <Avatar>
       <Suspense
         fallback={
           <PlayerAvatarFromNameBody
@@ -24,25 +25,17 @@ export function PlayerAvatar(props: { playerId: number; playerName?: string }) {
       >
         <PlayerAvatarWithQuery playerId={props.playerId} />
       </Suspense>
-    </div>
+    </Avatar>
   );
 }
 
 export function PlayerAvatarFromName(props: { playerName: string }) {
-  return (
-    <div class="avatar placeholder">
-      <PlayerAvatarFromNameBody playerName={props.playerName} />
-    </div>
-  );
+  return <AvatarFallback>{props.playerName}</AvatarFallback>;
 }
 
 function PlayerAvatarFromNameBody(props: { playerName: string }) {
   const shortName = createMemo(() => getPlayerNameInitials(props.playerName));
-  return (
-    <div class="bg-neutral text-neutral-content w-12 rounded-full">
-      <span>{shortName()}</span>
-    </div>
-  );
+  return <AvatarFallback>{shortName()}</AvatarFallback>;
 }
 
 function PlayerAvatarWithQuery(props: { playerId: number }) {
@@ -51,11 +44,7 @@ function PlayerAvatarWithQuery(props: { playerId: number }) {
   return (
     <Switch>
       <Match when={playerQuery.data?.profilePictureUrl}>
-        {(profilePictureUrl) => (
-          <div class="rounded-full w-12 h-12">
-            <img src={profilePictureUrl().href} alt="User avatar" />
-          </div>
-        )}
+        {(profilePictureUrl) => <AvatarImage src={profilePictureUrl().href} />}
       </Match>
       <Match when={playerQuery.data?.playerName}>
         {(name) => <PlayerAvatarFromNameBody playerName={name()} />}
