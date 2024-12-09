@@ -82,8 +82,10 @@ export const discGolfMetrixViewResults = cache(
       const playerId = playerIdStr ? parseInt(playerIdStr) : undefined;
 
       const scores = scoresEl.map((x) => {
-        if (x.textContent === null) return undefined;
-        return parseInt(x.textContent);
+        if (x.textContent == null) return undefined;
+
+        const score = parseInt(x.textContent);
+        return isNaN(score) ? undefined : score;
       });
 
       return { playerId, name, position, scores };
