@@ -6,7 +6,7 @@ import {
   flexRender,
   getCoreRowModel,
 } from "@tanstack/solid-table";
-import { createMemo, Show } from "solid-js";
+import { createMemo, For, Show } from "solid-js";
 import { discGolfMetrixViewResults } from "~/apiWrapper/viewResults";
 import { PlayerAvatar, PlayerAvatarFromName } from "~/components/playerAvatar";
 import { QueryBoundary } from "~/components/queryBoundary";
@@ -17,6 +17,14 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
 
 function useResultsQuery(id: string) {
   return createQuery(() => ({
@@ -179,38 +187,60 @@ function ResultsPage(props: {
           </BreadcrumbList>
         </Breadcrumb>
         <div class="overflow-x-auto w-full">
-          <table class="table w-full">
-            <thead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr>
-                  {headerGroup.headers.map((header) => (
-                    <th colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {table.getRowModel().rows.map((row) => (
-                <tr>
-                  {row.getVisibleCells().map((cell) => (
-                    <td>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+          <Table>
+            <TableHeader>
+              <For each={table.getHeaderGroups()}>
+                {(headerGroup) => (
+                  <TableRow>
+                    <For each={headerGroup.headers}>
+                      {(header) => (
+                        <TableHead colSpan={header.colSpan}>
+                          <Show when={!header.isPlaceholder}>
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                          </Show>
+                        </TableHead>
                       )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    </For>
+                  </TableRow>
+                )}
+              </For>
+            </TableHeader>
+            <TableBody>
+              <Show
+                when={table.getRowModel().rows?.length}
+                fallback={
+                  <TableRow>
+                    <TableCell
+                      colSpan={props.results.holesParList.length + 3}
+                      class="h-24 text-center"
+                    >
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                }
+              >
+                <For each={table.getRowModel().rows}>
+                  {(row) => (
+                    <TableRow>
+                      <For each={row.getVisibleCells()}>
+                        {(cell) => (
+                          <TableCell>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        )}
+                      </For>
+                    </TableRow>
+                  )}
+                </For>
+              </Show>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </main>
