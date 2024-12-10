@@ -1,12 +1,13 @@
-import { A, cache } from "@solidjs/router";
+import { A, query } from "@solidjs/router";
 import { createInfiniteQuery } from "@tanstack/solid-query";
 import {
   createColumnHelper,
   createSolidTable,
   flexRender,
   getCoreRowModel,
+  Table as TanstackTable,
 } from "@tanstack/solid-table";
-import { createMemo, For } from "solid-js";
+import { createMemo, For, Suspense } from "solid-js";
 import { discGolfMetrixGetCompetitionsList } from "~/apiWrapper/listCompetitions";
 import {
   Table,
@@ -17,6 +18,15 @@ import {
   TableRow,
 } from "./ui/table";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
+
+export function MyHistory() {
+  return (
+    <Suspense fallback={<MyHistorySkeleton />}>
+      <MyHistoryWithData />
+    </Suspense>
+  );
+}
 
 type MyHistory = {
   id: number;
@@ -34,9 +44,9 @@ function useMyHistoryQuery() {
   return createInfiniteQuery(() => ({
     queryKey: ["myCompetitionsList"],
     queryFn: async (context) => {
-      const result = await cache(
+      const result = await query(
         () => discGolfMetrixGetCompetitionsList(context.pageParam),
-        "cac"
+        "myCompetitionList"
       )();
       return result;
     },
@@ -50,44 +60,56 @@ function useMyHistoryQuery() {
   }));
 }
 
-export function MyHistory() {
+function MyHistorySkeleton() {
+  const columnHelper = createColumnHelper<MyHistory>();
+
+  const columns = createMemo(() => [
+    columnHelper.accessor("location", {
+      header: "Location",
+      cell: () => <Skeleton height={40} />,
+    }),
+    columnHelper.accessor("date", {
+      id: "lastName",
+      cell: () => <Skeleton height={40} />,
+      header: () => <span>Date</span>,
+    }),
+    columnHelper.accessor("players", {
+      cell: () => <Skeleton height={40} />,
+      header: () => <span>Players</span>,
+    }),
+    columnHelper.accessor("type", {
+      cell: () => <Skeleton height={40} />,
+      header: "Type",
+    }),
+  ]);
+
+  const table = createSolidTable({
+    get columns() {
+      return columns();
+    },
+    get data() {
+      return Array(10).fill({});
+    },
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  return <RenderHistory table={table} />;
+}
+
+function MyHistoryWithData() {
   const myHistoryQuery = useMyHistoryQuery();
-  const columnsData = createMemo(() =>
-    myHistoryQuery.data?.pages
-      .flatMap((x) => x.items)
-      .map<MyHistory>((x) => ({
-        id: x.id,
-        date: x.date,
-        location: {
-          courseName: x.courseName,
-          locationName: x.locationName,
-          id: x.id,
-        },
-        players: x.playerCount,
-        type: x.isTraining ? "training" : undefined,
-      }))
-  );
   const columnHelper = createColumnHelper<MyHistory>();
 
   const columns = createMemo(() => [
     columnHelper.accessor("location", {
       header: "Location",
       cell: (ctx) => (
-        // <div class="flex items-center space-x-3">
-        //   <div class="avatar">
-        //     <div class="mask mask-squircle w-12 h-12">
-        //       <img src="https://reqres.in/img/faces/7-image.jpg" alt="Avatar" />
-        //     </div>
-        //   </div>
-        //   <div>
         <>
           <A href={`/results/${ctx.getValue().id}`} class="font-bold">
             {ctx.getValue().courseName}
           </A>
           <div class="text-sm opacity-50">{ctx.getValue().locationName}</div>
         </>
-        //   </div>
-        // </div>
       ),
     }),
     columnHelper.accessor("date", {
@@ -123,6 +145,22 @@ export function MyHistory() {
     }),
   ]);
 
+  const columnsData = createMemo(() =>
+    myHistoryQuery.data?.pages
+      .flatMap((x) => x.items)
+      .map<MyHistory>((x) => ({
+        id: x.id,
+        date: x.date,
+        location: {
+          courseName: x.courseName,
+          locationName: x.locationName,
+          id: x.id,
+        },
+        players: x.playerCount,
+        type: x.isTraining ? "training" : undefined,
+      }))
+  );
+
   const table = createSolidTable({
     get columns() {
       return columns();
@@ -133,12 +171,16 @@ export function MyHistory() {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  return <RenderHistory table={table} />;
+}
+
+function RenderHistory(props: { table: TanstackTable<MyHistory> }) {
   return (
     <div class="h-full w-full pb-6 bg-base-100">
       <div class="overflow-x-auto w-full">
         <Table>
           <TableHeader>
-            <For each={table.getHeaderGroups()}>
+            <For each={props.table.getHeaderGroups()}>
               {(headerGroup) => (
                 <TableRow>
                   <For each={headerGroup.headers}>
@@ -158,7 +200,7 @@ export function MyHistory() {
             </For>
           </TableHeader>
           <TableBody>
-            <For each={table.getRowModel().rows}>
+            <For each={props.table.getRowModel().rows}>
               {(row) => (
                 <TableRow>
                   <For each={row.getVisibleCells()}>
