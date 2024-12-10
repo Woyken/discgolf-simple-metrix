@@ -11,6 +11,7 @@ import { useGoogleMapsMapsLibrary } from "./mapsLibraryProvider";
 import { createQuery } from "@tanstack/solid-query";
 import { getCourseMapDataQueryOptions } from "./query/query";
 import { createGeolocation } from "./createGeolocationWatcher";
+import { Button } from "../ui/button";
 
 export function GoogleMapsRender(props: { courseId: string }) {
   const query = createQuery(() => getCourseMapDataQueryOptions(props.courseId));
@@ -146,9 +147,9 @@ function RenderMapWithCourseData(props: {
   });
 
   const locationButton = (
-    <button classList={{ hidden: !!location() }} onclick={refetch}>
+    <Button classList={{ hidden: !!location() }} onclick={refetch}>
       Show my location
-    </button>
+    </Button>
   ) as HTMLElement;
 
   map().controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);

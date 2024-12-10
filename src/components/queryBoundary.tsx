@@ -1,6 +1,7 @@
 import type { CreateQueryResult } from "@tanstack/solid-query";
 import type { JSX } from "solid-js";
 import { ErrorBoundary, Match, Suspense, Switch, children } from "solid-js";
+import { Button } from "./ui/button";
 
 export interface QueryBoundaryProps<T = unknown> {
   query: CreateQueryResult<T, Error>;
@@ -43,14 +44,14 @@ export function QueryBoundary<T>(props: QueryBoundaryProps<T>) {
           ) : (
             <div>
               <div class="error">{err.message}</div>
-              <button
+              <Button
                 onClick={async () => {
                   await props.query.refetch();
                   reset();
                 }}
               >
                 retry
-              </button>
+              </Button>
             </div>
           )
         }

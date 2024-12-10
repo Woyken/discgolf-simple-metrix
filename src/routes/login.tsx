@@ -4,6 +4,7 @@ import { createMutation } from "@tanstack/solid-query";
 import { valibotValidator } from "@tanstack/valibot-form-adapter";
 import { email, minLength, pipe, string } from "valibot";
 import { discGolfMetrixLogin } from "~/apiWrapper/login";
+import { Button } from "~/components/ui/button";
 
 function useLoginMutation() {
   return createMutation(() => ({
@@ -122,7 +123,7 @@ function LoginForm() {
                 })}
                 children={(state) => {
                   return (
-                    <button
+                    <Button
                       type="submit"
                       class={"btn btn-primary mt-2 w-full"}
                       disabled={!state().canSubmit}
@@ -131,7 +132,7 @@ function LoginForm() {
                         <span class="loading loading-spinner"></span>
                       ) : null}
                       Login
-                    </button>
+                    </Button>
                   );
                 }}
               />
