@@ -89,7 +89,7 @@ function RenderMapWithCourseData(props: {
 
   const mapContainer = (
     <div
-      class="[&_.gm-style-iw]:bg-base-100 [&_.gm-style-iw-tc]:after:bg-base-100"
+      class="[&_.gm-style-iw]:bg-base-100 [&_.gm-style-iw-tc]:after:bg-base-100 text-neutral-800"
       style={{ width: "500px", height: "500px" }}
     />
   ) as HTMLDivElement;
