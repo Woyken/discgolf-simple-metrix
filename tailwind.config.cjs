@@ -1,6 +1,5 @@
 // @ts-check
 import tailwindcssAnimate from "tailwindcss-animate";
-import daisyui from "daisyui";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -104,15 +103,5 @@ export default {
       },
     },
   },
-  daisyui: {
-    themes: false,
-    darkTheme: "dark",
-    base: true,
-    styled: true,
-    utils: true,
-    prefix: "",
-    logs: true,
-    themeRoot: ":root",
-  },
-  plugins: [tailwindcssAnimate, daisyui],
+  plugins: [tailwindcssAnimate],
 };
