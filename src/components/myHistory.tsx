@@ -44,10 +44,7 @@ function useMyHistoryQuery() {
   return createInfiniteQuery(() => ({
     queryKey: ["myCompetitionsList"],
     queryFn: async (context) => {
-      const result = await query(
-        () => discGolfMetrixGetCompetitionsList(context.pageParam),
-        "myCompetitionList"
-      )();
+      const result = await discGolfMetrixGetCompetitionsList(context.pageParam);
       return result;
     },
     initialPageParam: undefined as
