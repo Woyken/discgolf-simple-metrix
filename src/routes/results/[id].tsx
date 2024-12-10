@@ -104,7 +104,6 @@ function ResultsPage(props: {
           columnHelper.accessor("scores", {
             header: `${index + 1}`,
             cell: (ctx) => {
-              console.log("cell", ctx.getValue());
               return <>{ctx.getValue()[index]}</>;
             },
           })
