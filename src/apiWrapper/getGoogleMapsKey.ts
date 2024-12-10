@@ -1,8 +1,8 @@
 import { getDomParser } from "./domParser";
-import { cache } from "@solidjs/router";
+import { query } from "@solidjs/router";
 import { discGolfMetrixUrl } from "./urlBase";
 
-export const discGolfMetrixGetGoogleMapsKey = cache(
+export const discGolfMetrixGetGoogleMapsKey = query(
   async (courseId: string) => {
     "use server";
 

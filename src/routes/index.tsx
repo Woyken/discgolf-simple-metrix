@@ -1,4 +1,3 @@
-import { Suspense } from "solid-js";
 import { MyHistory } from "~/components/myHistory";
 
 export function delay(ms: number) {

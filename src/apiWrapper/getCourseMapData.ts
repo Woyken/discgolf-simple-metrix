@@ -1,4 +1,4 @@
-import { cache } from "@solidjs/router";
+import { query } from "@solidjs/router";
 import { discGolfMetrixUrl } from "./urlBase";
 
 type MapJsonResponse = {
@@ -37,7 +37,7 @@ type MapJsonResponse = {
   Forests: Array<unknown>;
 };
 
-export const discGolfMetrixGetCourseMapData = cache(
+export const discGolfMetrixGetCourseMapData = query(
   async (courseId: string) => {
     "use server";
 

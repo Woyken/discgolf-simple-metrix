@@ -1,9 +1,9 @@
 import { getCookie } from "vinxi/http";
 import { getDomParser } from "./domParser";
-import { cache, redirect } from "@solidjs/router";
+import { query, redirect } from "@solidjs/router";
 import { discGolfMetrixUrl } from "./urlBase";
 
-export const discGolfMetrixViewResults = cache(
+export const discGolfMetrixViewResults = query(
   async (competitionId: string) => {
     "use server";
 

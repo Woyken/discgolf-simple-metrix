@@ -1,6 +1,6 @@
 import { getCookie } from "vinxi/http";
 import { getDomParser } from "./domParser";
-import { cache, redirect } from "@solidjs/router";
+import { query, redirect } from "@solidjs/router";
 import { number, parse } from "valibot";
 import { discGolfMetrixUrl } from "./urlBase";
 
@@ -9,7 +9,7 @@ import { discGolfMetrixUrl } from "./urlBase";
 // And request
 // https://discgolfmetrix.com/find_user_server.php?value=karolis%20uz
 
-export const discGolfMetrixGetPlayer = cache(async (playerIdMaybe: number) => {
+export const discGolfMetrixGetPlayer = query(async (playerIdMaybe: number) => {
   "use server";
   const playerId = parse(number(), playerIdMaybe);
   const token = getCookie("token");
