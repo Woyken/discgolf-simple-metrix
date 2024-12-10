@@ -6,8 +6,16 @@ import {
   flexRender,
   getCoreRowModel,
 } from "@tanstack/solid-table";
-import { createMemo } from "solid-js";
+import { createMemo, For } from "solid-js";
 import { discGolfMetrixGetCompetitionsList } from "~/apiWrapper/listCompetitions";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
 
 type MyHistory = {
   id: number;
@@ -127,35 +135,46 @@ export function MyHistory() {
   return (
     <div class="h-full w-full pb-6 bg-base-100">
       <div class="overflow-x-auto w-full">
-        <table class="table w-full">
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr>
-                {headerGroup.headers.map((header) => (
-                  <th colSpan={header.colSpan}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
+        <Table>
+          <TableHeader>
+            <For each={table.getHeaderGroups()}>
+              {(headerGroup) => (
+                <TableRow>
+                  <For each={headerGroup.headers}>
+                    {(header) => (
+                      <TableHead colSpan={header.colSpan}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    )}
+                  </For>
+                </TableRow>
+              )}
+            </For>
+          </TableHeader>
+          <TableBody>
+            <For each={table.getRowModel().rows}>
+              {(row) => (
+                <TableRow>
+                  <For each={row.getVisibleCells()}>
+                    {(cell) => (
+                      <TableCell>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
                         )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr>
-                {row.getVisibleCells().map((cell) => (
-                  <td>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                      </TableCell>
+                    )}
+                  </For>
+                </TableRow>
+              )}
+            </For>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
