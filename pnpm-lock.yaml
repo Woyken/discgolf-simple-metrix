@@ -22,7 +22,7 @@ importers:
         version: 0.15.1(solid-js@1.9.3)
       '@solidjs/start':
         specifier: ^1.0.10
-        version: 1.0.10(solid-js@1.9.3)(vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))(vite@6.0.3(@types/node@22.5.5)(jiti@2.4.1)(terser@5.32.0)(yaml@2.5.1))
+        version: 1.0.10(solid-js@1.9.3)(vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))(vite@6.0.3(@types/node@22.5.5)(jiti@2.4.1)(terser@5.32.0)(yaml@2.5.1))
       '@tanstack/solid-query':
         specifier: ^5.62.3
         version: 5.62.3(solid-js@1.9.3)
@@ -38,6 +38,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      idb-keyval:
+        specifier: ^6.2.1
+        version: 6.2.1
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1
@@ -64,7 +67,7 @@ importers:
         version: 1.0.0-beta.9(typescript@5.6.2)
       vinxi:
         specifier: ^0.4.3
-        version: 0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2)
+        version: 0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2)
     devDependencies:
       '@eslint/js':
         specifier: ^9.10.0
@@ -2212,6 +2215,9 @@ packages:
   iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
+
+  idb-keyval@6.2.1:
+    resolution: {integrity: sha512-8Sb3veuYCyrZL+VBt9LJfZjLUPWVvqn8tG28VqYNFCo43KHcKuq+b4EiXGeuaLAQWL2YmyDgMp2aSpH9JHsEQg==}
 
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -4554,11 +4560,11 @@ snapshots:
     dependencies:
       solid-js: 1.9.3
 
-  '@solidjs/start@1.0.10(solid-js@1.9.3)(vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))(vite@6.0.3(@types/node@22.5.5)(jiti@2.4.1)(terser@5.32.0)(yaml@2.5.1))':
+  '@solidjs/start@1.0.10(solid-js@1.9.3)(vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))(vite@6.0.3(@types/node@22.5.5)(jiti@2.4.1)(terser@5.32.0)(yaml@2.5.1))':
     dependencies:
-      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))
-      '@vinxi/server-components': 0.4.3(vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))
-      '@vinxi/server-functions': 0.4.3(vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))
+      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))
+      '@vinxi/server-components': 0.4.3(vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))
+      '@vinxi/server-functions': 0.4.3(vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))
       defu: 6.1.4
       error-stack-parser: 2.1.4
       html-to-image: 1.11.11
@@ -4801,7 +4807,7 @@ snapshots:
       untun: 0.1.3
       uqr: 0.1.2
 
-  '@vinxi/plugin-directives@0.4.3(vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))':
+  '@vinxi/plugin-directives@0.4.3(vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))':
     dependencies:
       '@babel/parser': 7.25.6
       acorn: 8.12.1
@@ -4812,29 +4818,29 @@ snapshots:
       magicast: 0.2.11
       recast: 0.23.9
       tslib: 2.7.0
-      vinxi: 0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2)
+      vinxi: 0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2)
 
-  '@vinxi/server-components@0.4.3(vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))':
+  '@vinxi/server-components@0.4.3(vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))':
     dependencies:
-      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))
+      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))
       acorn: 8.12.1
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.1)
       astring: 1.9.0
       magicast: 0.2.11
       recast: 0.23.9
-      vinxi: 0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2)
+      vinxi: 0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2)
 
-  '@vinxi/server-functions@0.4.3(vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))':
+  '@vinxi/server-functions@0.4.3(vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))':
     dependencies:
-      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))
+      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2))
       acorn: 8.12.1
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.1)
       astring: 1.9.0
       magicast: 0.2.11
       recast: 0.23.9
-      vinxi: 0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2)
+      vinxi: 0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2)
 
   abbrev@2.0.0: {}
 
@@ -5704,6 +5710,8 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
+  idb-keyval@6.2.1: {}
+
   ieee754@1.2.1: {}
 
   ignore@5.3.2: {}
@@ -6072,7 +6080,7 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  nitropack@2.10.4(typescript@5.6.2):
+  nitropack@2.10.4(idb-keyval@6.2.1)(typescript@5.6.2):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.4
       '@netlify/functions': 2.8.2
@@ -6139,7 +6147,7 @@ snapshots:
       unctx: 2.3.1
       unenv: 1.10.0
       unimport: 3.14.5(rollup@4.28.1)
-      unstorage: 1.13.1(ioredis@5.4.1)
+      unstorage: 1.13.1(idb-keyval@6.2.1)(ioredis@5.4.1)
       untyped: 1.5.1
       unwasm: 0.3.9
     transitivePeerDependencies:
@@ -6911,7 +6919,7 @@ snapshots:
       acorn: 8.14.0
       webpack-virtual-modules: 0.6.2
 
-  unstorage@1.13.1(ioredis@5.4.1):
+  unstorage@1.13.1(idb-keyval@6.2.1)(ioredis@5.4.1):
     dependencies:
       anymatch: 3.1.3
       chokidar: 3.6.0
@@ -6924,6 +6932,7 @@ snapshots:
       ofetch: 1.4.1
       ufo: 1.5.4
     optionalDependencies:
+      idb-keyval: 6.2.1
       ioredis: 5.4.1
 
   untun@0.1.3:
@@ -6983,7 +6992,7 @@ snapshots:
 
   validate-html-nesting@1.2.2: {}
 
-  vinxi@0.4.3(@types/node@22.5.5)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2):
+  vinxi@0.4.3(@types/node@22.5.5)(idb-keyval@6.2.1)(ioredis@5.4.1)(terser@5.32.0)(typescript@5.6.2):
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-syntax-jsx': 7.24.7(@babel/core@7.26.0)
@@ -7005,7 +7014,7 @@ snapshots:
       hookable: 5.5.3
       http-proxy: 1.18.1
       micromatch: 4.0.8
-      nitropack: 2.10.4(typescript@5.6.2)
+      nitropack: 2.10.4(idb-keyval@6.2.1)(typescript@5.6.2)
       node-fetch-native: 1.6.4
       path-to-regexp: 6.3.0
       pathe: 1.1.2
@@ -7016,7 +7025,7 @@ snapshots:
       ufo: 1.5.4
       unctx: 2.3.1
       unenv: 1.10.0
-      unstorage: 1.13.1(ioredis@5.4.1)
+      unstorage: 1.13.1(idb-keyval@6.2.1)(ioredis@5.4.1)
       vite: 5.4.11(@types/node@22.5.5)(terser@5.32.0)
       zod: 3.23.8
     transitivePeerDependencies:
