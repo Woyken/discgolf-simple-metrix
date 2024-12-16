@@ -45,7 +45,22 @@ export type CompetitionThrowsResponse = {
         ModifiedOn?: string;
         ModifiedBy?: string;
         Diff: string;
-        Throws: Array<never>;
+        Throws: Array<{
+          ID: string;
+          ScorecardID: string;
+          HoleNo: string;
+          ThrowNo: string;
+          Time: string;
+          FromLat?: string;
+          FromLng?: string;
+          ToLat: string;
+          ToLng: string;
+          Distance: string;
+          Penalty?: string;
+          FromCircle?: string;
+          ToCircle?: string;
+          Basket?: string;
+        }>;
       }
     >;
   }>;
@@ -84,8 +99,13 @@ export type CompetitionThrowsResponse = {
     Fairway: Array<never>;
     Forests: Array<never>;
   };
-  topRatedMapUsers: Array<never>;
-  prevRoundsResults: boolean;
+  topRatedMapUsers: Array<string>;
+  prevRoundsResults:
+    | boolean
+    | Record<
+        string,
+        { UserID: string; Name: string; SumResult: string; SumDiff: string }
+      >;
 };
 
 export const discGolfMetrixGetCompetitionThrows = query(

@@ -1,6 +1,18 @@
 import { createStore as createIdbStore, get, set as setIdb } from "idb-keyval";
-import { Accessor, createEffect, createSignal } from "solid-js";
+import { Accessor, createEffect, createSignal, For } from "solid-js";
 import { createStore, produce, unwrap } from "solid-js/store";
+
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import {
+  Pagination,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationItems,
+} from "../ui/pagination";
+import { createQuery } from "@tanstack/solid-query";
+import { getCompetitionThrowsQueryOptions } from "../mapbox/query/query";
+import { QueryBoundary } from "../queryBoundary";
+import { CompetitionThrowsResponse } from "~/apiWrapper/getCompetitionThrows";
 
 const idbStore = createIdbStore("w-db", "competition-throws");
 
@@ -26,15 +38,15 @@ type ParticipantThrows = {
 type SingleThrow =
   ParticipantThrows["participants"][0]["holes"][0]["throws"][0];
 
-function setStoreThrows(competitionId: number, throwsData: ParticipantThrows) {
+function setStoreThrows(competitionId: string, throwsData: ParticipantThrows) {
   return setIdb(competitionId, throwsData, idbStore);
 }
 
-function getStoreThrows(competitionId: number) {
+function getStoreThrows(competitionId: string) {
   return get<ParticipantThrows>(competitionId, idbStore);
 }
 
-function useParticipantThrows(competitionId: Accessor<number>) {
+function useParticipantThrows(competitionId: Accessor<string>) {
   const [isInitialized, setIsInitialized] = createSignal(false);
   const [getThrows, setThrows] = createStore<ParticipantThrows>({
     participants: [],
@@ -102,13 +114,34 @@ function useParticipantThrows(competitionId: Accessor<number>) {
     get throws() {
       return getThrows.participants;
     },
+    getThrowsForHole: (participantId: number, holeId: number) =>
+      getThrows.participants
+        .find((x) => x.participantId === participantId)
+        ?.holes.find((x) => x.holeId === holeId)?.throws,
     get isInitialized() {
       return isInitialized();
     },
   };
 }
+type ThrowsStore = ReturnType<typeof useParticipantThrows>;
 
-export function EnterCompetitionResults(props: { competitionId: number }) {
+export default function EnterCompetitionResultsWithQuery(props: {
+  competitionId: string;
+}) {
+  const competitionScoresQuery = createQuery(() =>
+    getCompetitionThrowsQueryOptions(props.competitionId.toString())
+  );
+
+  return (
+    <QueryBoundary query={competitionScoresQuery}>
+      {(data) => <EnterCompetitionResults competitionData={data} />}
+    </QueryBoundary>
+  );
+}
+
+function EnterCompetitionResults(props: {
+  competitionData: CompetitionThrowsResponse;
+}) {
   // TODO enter results.
   // Do the custom keyboard with simple input?
   // use native keyboard? (slower :( )
@@ -119,7 +152,77 @@ export function EnterCompetitionResults(props: { competitionId: number }) {
   // If using GPS, then single click. (Unless OB, can't say for certain)
   // No api to store GPS throw location. Just store it in IDB locally?
 
-  const throwsStore = useParticipantThrows(() => props.competitionId);
+  const throwsStore = useParticipantThrows(
+    () => props.competitionData.competition.ID
+  );
+  const [activeHole, setActiveHole] = createSignal(1);
 
-  return <></>;
+  return (
+    <>
+      <EnterHoleResults
+        competitionData={props.competitionData}
+        store={throwsStore}
+        competitionId={props.competitionData.competition.ID}
+        holeId={activeHole()}
+      />
+      <Pagination
+        count={props.competitionData.course.Tracks.length}
+        fixedItems
+        page={activeHole()}
+        itemComponent={(props) => (
+          <PaginationItem
+            onClick={() => setActiveHole(props.page)}
+            page={props.page}
+          >
+            {props.page}
+          </PaginationItem>
+        )}
+        ellipsisComponent={() => <PaginationEllipsis />}
+      >
+        <PaginationItems />
+      </Pagination>
+    </>
+  );
+}
+
+function EnterHoleResults(props: {
+  competitionData: CompetitionThrowsResponse;
+  store: ThrowsStore;
+  competitionId: string;
+  holeId: number;
+}) {
+  return (
+    <>
+      <div class="space-y-4">
+        <h4 class="text-sm font-medium">Lorem ipsum dolor sit.</h4>
+        <div class="grid gap-6">
+          <For each={props.competitionData.scorecards}>
+            {(scorecard) => (
+              <>
+                <div class="flex items-center justify-between space-x-4">
+                  <div class="flex items-center space-x-4">
+                    <Avatar>
+                      {/* <AvatarImage src="/avatars/03.png" /> */}
+                      <AvatarFallback>{scorecard.Name}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p class="text-sm font-medium leading-none">
+                        {scorecard.Name}
+                      </p>
+                      <p class="text-sm text-muted-foreground">
+                        {scorecard.ID}
+                      </p>
+                    </div>
+                  </div>
+                  <div> - </div>
+                  <div>{scorecard.Results[props.holeId].Result ?? 0}</div>
+                  <div> + </div>
+                </div>
+              </>
+            )}
+          </For>
+        </div>
+      </div>
+    </>
+  );
 }

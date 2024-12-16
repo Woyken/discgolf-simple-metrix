@@ -35,8 +35,9 @@ export function QueryBoundary<T>(props: QueryBoundaryProps<T>) {
   return (
     <Suspense fallback={props.loadingFallback}>
       <ErrorBoundary
-        fallback={(err: Error, reset) =>
-          props.errorFallback ? (
+        fallback={(err: Error, reset) => {
+          console.error(err);
+          return props.errorFallback ? (
             props.errorFallback(err, async () => {
               await props.query.refetch();
               reset();
@@ -53,8 +54,8 @@ export function QueryBoundary<T>(props: QueryBoundaryProps<T>) {
                 retry
               </Button>
             </div>
-          )
-        }
+          );
+        }}
       >
         <Switch>
           {/* <Match when={props.query.isError}>
