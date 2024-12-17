@@ -1,4 +1,4 @@
-import { A, useParams } from "@solidjs/router";
+import { A, useParams, useSearchParams } from "@solidjs/router";
 import { createQuery } from "@tanstack/solid-query";
 import {
   createColumnHelper,
@@ -6,8 +6,9 @@ import {
   flexRender,
   getCoreRowModel,
 } from "@tanstack/solid-table";
-import { createMemo, For, Show } from "solid-js";
-import { discGolfMetrixViewResults } from "~/apiWrapper/viewResults";
+import { Accessor, createMemo, For, Show } from "solid-js";
+import { type discGolfMetrixGetCompetitionThrows } from "~/apiWrapper/getCompetitionThrows";
+import { getCompetitionThrowsQueryOptions } from "~/components/mapbox/query/query";
 import { PlayerAvatar, PlayerAvatarFromName } from "~/components/playerAvatar";
 import { QueryBoundary } from "~/components/queryBoundary";
 import {
@@ -18,6 +19,13 @@ import {
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -26,19 +34,11 @@ import {
   TableRow,
 } from "~/components/ui/table";
 
-function useResultsQuery(id: string) {
-  return createQuery(() => ({
-    queryKey: ["resultsq", id],
-    queryFn: async () => {
-      const result = await discGolfMetrixViewResults(id);
-      return result;
-    },
-    throwOnError: true,
-  }));
+function useCompetitionScoresQuery(competitionId: Accessor<string>) {
+  return createQuery(() => getCompetitionThrowsQueryOptions(competitionId()));
 }
 
 type TableColumns = {
-  position: number;
   player: { name: string; id?: number };
   scores: (number | undefined)[];
   diff: string;
@@ -47,7 +47,7 @@ type TableColumns = {
 
 export default function TodoLoaderPage() {
   const params = useParams<{ id: string }>();
-  const resultsQuery = useResultsQuery(params.id);
+  const resultsQuery = useCompetitionScoresQuery(() => params.id);
   return (
     // <Show when={resultsQuery.data}>
     //   {(results) => <ResultsPage results={results()} />}
@@ -66,8 +66,11 @@ export default function TodoLoaderPage() {
 }
 
 function ResultsPage(props: {
-  results: Awaited<ReturnType<typeof discGolfMetrixViewResults>>;
+  results: Awaited<ReturnType<typeof discGolfMetrixGetCompetitionThrows>>;
 }) {
+  const [searchParams, setSearchParams] = useSearchParams<{
+    groupId: string;
+  }>();
   const columnHelper = createColumnHelper<TableColumns>();
 
   const columns = createMemo(() => [
@@ -100,9 +103,14 @@ function ResultsPage(props: {
     columnHelper.group({
       header: "Holes",
       columns: [
-        ...(props.results.holesParList ?? []).map((_, index) =>
+        ...(
+          props.results.course.Tracks.map((x) => ({
+            id: x.Name,
+            par: x.Par,
+          })) ?? []
+        ).map(({ id, par }, index) =>
           columnHelper.accessor("scores", {
-            header: `${index + 1}`,
+            header: `${id}`,
             cell: (ctx) => {
               return <>{ctx.getValue()[index]}</>;
             },
@@ -124,35 +132,51 @@ function ResultsPage(props: {
     }),
   ]);
 
+  const groupIds = createMemo(
+    () => new Set(props.results.scorecards.map((s) => s.GroupName))
+  );
+
   const tableData = createMemo(
     () =>
-      props.results.players.map(
-        (player) =>
-          ({
-            get diff() {
-              const diff = player.scores.reduce(
-                (prev: number, curr, currentIndex) => {
-                  if (curr === undefined) return prev;
-                  const holeDiff =
-                    curr - (props.results.holesParList?.[currentIndex] ?? 0);
-                  return prev + holeDiff;
-                },
-                0
-              );
-              return `${diff >= 0 ? "+" : "-"}${Math.abs(diff)}`;
-            },
-            player: {
-              id: player.playerId,
-              name: player.name,
-            },
-            scores: player.scores,
-            position: player.position,
-            total: player.scores.reduce(
-              (prev: number, curr: number | undefined) => prev + (curr ?? 0),
-              0
-            ),
-          } satisfies TableColumns)
-      ) ?? []
+      props.results.scorecards
+        .filter((x) => {
+          if (searchParams.groupId === undefined) return true;
+          return x.GroupName === searchParams.groupId;
+        })
+        .map(
+          (player) =>
+            ({
+              get diff() {
+                console.log(props.results);
+                const diff = Object.values(player.Results).reduce(
+                  (prev: number, curr) => {
+                    if (curr === undefined) return prev;
+                    if ("Diff" in curr) {
+                      const holeDiff = parseInt(curr.Diff);
+                      return prev + holeDiff;
+                    }
+                    return prev;
+                  },
+                  0
+                );
+                return `${diff >= 0 ? "+" : "-"}${Math.abs(diff)}`;
+              },
+              player: {
+                id: parseInt(player.UserID),
+                name: player.Name,
+              },
+              scores: Object.values(player.Results).map((x) =>
+                "Result" in x ? parseInt(x.Result) : undefined
+              ),
+              total: Object.values(player.Results)
+                .map((x) => ("Result" in x ? parseInt(x.Result) : undefined))
+                .reduce(
+                  (prev: number, curr: number | undefined) =>
+                    prev + (curr ?? 0),
+                  0
+                ),
+            } satisfies TableColumns)
+        ) ?? []
   );
 
   const table = createSolidTable({
@@ -176,8 +200,10 @@ function ResultsPage(props: {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/courses/${props.results.courseId}`}>
-                  {props.results.courseName}
+                <BreadcrumbLink
+                  href={`/courses/${props.results.course.UserID}`}
+                >
+                  {props.results.course.Name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -188,6 +214,25 @@ function ResultsPage(props: {
           </Breadcrumb>
           <A href="./enter">Edit scores</A>
         </div>
+        <Select
+          value={searchParams.groupId}
+          onChange={(value) => {
+            if (value === "All") return setSearchParams({ groupId: undefined });
+            setSearchParams({ groupId: value });
+          }}
+          options={["All", ...groupIds()]}
+          placeholder="Select a group…"
+          itemComponent={(props) => (
+            <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
+          )}
+        >
+          <SelectTrigger aria-label="Group" class="w-[180px]">
+            <SelectValue<string>>
+              {(state) => state.selectedOption()}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent />
+        </Select>
         <div class="overflow-x-auto w-full">
           <Table>
             <TableHeader>
@@ -216,7 +261,7 @@ function ResultsPage(props: {
                 fallback={
                   <TableRow>
                     <TableCell
-                      colSpan={props.results.holesParList.length + 3}
+                      colSpan={props.results.course.Tracks.length + 3}
                       class="h-24 text-center"
                     >
                       No results.

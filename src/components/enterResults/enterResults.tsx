@@ -34,6 +34,13 @@ import { discGolfMetrixUpdateCompetitionScores2 } from "~/apiWrapper/updateCompe
 import { showToast } from "../ui/toast";
 import { discGolfMetrixUrl } from "~/apiWrapper/urlBase";
 import { useSearchParams } from "@solidjs/router";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const idbStore = createIdbStore("w-db", "competition-throws");
 
@@ -191,7 +198,10 @@ function EnterCompetitionResults(props: {
   const throwsStore = useParticipantThrows(
     () => props.competitionData.competition.ID
   );
-  const [searchParams, setSearchParams] = useSearchParams<{ holeId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams<{
+    holeId: string;
+    groupId: string;
+  }>();
   const activeHoleId = createMemo(() => {
     if (!searchParams.holeId) return 1;
     const p = parseInt(searchParams.holeId);
@@ -199,13 +209,35 @@ function EnterCompetitionResults(props: {
     return p;
   });
 
+  const groupIds = createMemo(
+    () => new Set(props.competitionData.scorecards.map((s) => s.GroupName))
+  );
+
   return (
     <>
+      <Select
+        value={searchParams.groupId}
+        onChange={(value) => {
+          if (value === "All") return setSearchParams({ groupId: null });
+          setSearchParams({ groupId: value });
+        }}
+        options={["All", ...groupIds()]}
+        placeholder="Select a group…"
+        itemComponent={(props) => (
+          <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
+        )}
+      >
+        <SelectTrigger aria-label="Group" class="w-[180px]">
+          <SelectValue<string>>{(state) => state.selectedOption()}</SelectValue>
+        </SelectTrigger>
+        <SelectContent />
+      </Select>
       <EnterHoleResults
         competitionData={props.competitionData}
         store={throwsStore}
         competitionId={props.competitionData.competition.ID}
         holeId={activeHoleId()}
+        groupId={searchParams.groupId}
       />
       <Pagination
         count={props.competitionData.course.Tracks.length}
@@ -234,6 +266,7 @@ function EnterHoleResults(props: {
   store: ThrowsStore;
   competitionId: string;
   holeId: number;
+  groupId?: string;
 }) {
   const queryClient = useQueryClient();
   const updateScoresMutation = createMutation(() => ({
@@ -288,7 +321,12 @@ function EnterHoleResults(props: {
       <div class="space-y-4">
         <h4 class="text-sm font-medium">Hole {props.holeId}</h4>
         <div class="grid gap-6">
-          <For each={props.competitionData.scorecards}>
+          <For
+            each={props.competitionData.scorecards.filter((s) => {
+              if (props.groupId === undefined) return true;
+              return s.GroupName === props.groupId;
+            })}
+          >
             {(scorecard) => {
               const [dropdownOpen, setDropdownOpen] = createSignal(false);
 
@@ -309,6 +347,12 @@ function EnterHoleResults(props: {
                   });
                 };
 
+              const scorecardForCurrentHole = createMemo(() => {
+                const resultInScorecards = scorecard.Results[props.holeId];
+                if ("Result" in resultInScorecards) return resultInScorecards;
+                return undefined;
+              });
+
               const currentScore = createMemo(() => {
                 const throws = throwsForHole();
                 const scoreFromThrows =
@@ -318,7 +362,7 @@ function EnterHoleResults(props: {
                 const resultScore =
                   scoreFromThrows > 0
                     ? scoreFromThrows
-                    : scorecard.Results[props.holeId].Result;
+                    : scorecardForCurrentHole()?.Result ?? 0;
                 return resultScore;
               });
 
@@ -362,10 +406,10 @@ function EnterHoleResults(props: {
                           disabled={
                             updateScoresMutation.isPending ||
                             (parseInt(
-                              scorecard.Results[props.holeId].Result
+                              scorecardForCurrentHole()?.Result ?? "0"
                             ) === currentScore() &&
                               parseInt(
-                                scorecard.Results[props.holeId].Penalty
+                                scorecardForCurrentHole()?.Penalty ?? "0"
                               ) ===
                                 throwsForHole()?.filter(
                                   (t) => t.landed === "Penalty"
@@ -473,12 +517,8 @@ function EnterHoleResults(props: {
                     </div>
                     <div class="flex space-x-4 overflow-auto">
                       <div>Saved Metrix data</div>
-                      <div>
-                        Result: {scorecard.Results[props.holeId].Result}
-                      </div>
-                      <div>
-                        Penalty: {scorecard.Results[props.holeId].Penalty}
-                      </div>
+                      <div>Result: {scorecardForCurrentHole()?.Result}</div>
+                      <div>Penalty: {scorecardForCurrentHole()?.Penalty}</div>
                     </div>
                   </div>
                 </>

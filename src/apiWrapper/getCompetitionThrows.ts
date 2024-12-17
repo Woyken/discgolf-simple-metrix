@@ -28,40 +28,44 @@ export type CompetitionThrowsResponse = {
     Image?: string;
     Results: Record<
       string,
-      {
-        ID: string;
-        ScorecardID: string;
-        HoleNo: string;
-        Result: string;
-        OB: string;
-        GH: string;
-        OCP: string;
-        ICP: string;
-        BEH: string;
-        IBP: string;
-        Penalty: string;
-        CreatedOn: string;
-        CreatedBy: string;
-        ModifiedOn?: string;
-        ModifiedBy?: string;
-        Diff: string;
-        Throws: Array<{
+      | {
           ID: string;
           ScorecardID: string;
           HoleNo: string;
-          ThrowNo: string;
-          Time: string;
-          FromLat?: string;
-          FromLng?: string;
-          ToLat: string;
-          ToLng: string;
-          Distance: string;
-          Penalty?: string;
-          FromCircle?: string;
-          ToCircle?: string;
-          Basket?: string;
-        }>;
-      }
+          Result: string;
+          OB: string;
+          GH: string;
+          OCP: string;
+          ICP: string;
+          BEH: string;
+          IBP: string;
+          Penalty: string;
+          CreatedOn: string;
+          CreatedBy: string;
+          ModifiedOn?: string;
+          ModifiedBy?: string;
+          Diff: string;
+          Throws: Array<{
+            ID: string;
+            ScorecardID: string;
+            HoleNo: string;
+            ThrowNo: string;
+            Time: string;
+            FromLat?: string;
+            FromLng?: string;
+            ToLat: string;
+            ToLng: string;
+            Distance: string;
+            Penalty?: string;
+            FromCircle?: string;
+            ToCircle?: string;
+            Basket?: string;
+          }>;
+        }
+      | {
+          HoleNo: number;
+          Throws: [];
+        }
     >;
   }>;
   course: {
