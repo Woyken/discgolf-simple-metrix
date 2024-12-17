@@ -17,7 +17,6 @@ export const discGolfMetrixGetScorecardV2 = query(
     const token = getCookie("token");
     if (!token) throw redirect("/login");
 
-    //?""&pool="+groupname_value
     const url = new URL(`/scorecard_server2.php`, discGolfMetrixUrl);
     url.searchParams.set("ID", competitionId);
     url.searchParams.set("view", view);
