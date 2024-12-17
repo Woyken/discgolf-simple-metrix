@@ -1,4 +1,4 @@
-import { useParams } from "@solidjs/router";
+import { A, useParams } from "@solidjs/router";
 import { createQuery } from "@tanstack/solid-query";
 import {
   createColumnHelper,
@@ -168,23 +168,26 @@ function ResultsPage(props: {
   return (
     <main class="text-center mx-auto p-4">
       <div class="h-full w-full pb-6 bg-base-100">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href={`/courses/${props.results.courseId}`}>
-                {props.results.courseName}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink current>Breadcrumb</BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        <div class="flex justify-between">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href={`/courses/${props.results.courseId}`}>
+                  {props.results.courseName}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink current>Breadcrumb</BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <A href="./enter">Edit scores</A>
+        </div>
         <div class="overflow-x-auto w-full">
           <Table>
             <TableHeader>
