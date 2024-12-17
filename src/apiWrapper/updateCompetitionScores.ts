@@ -13,7 +13,7 @@ import { getDomParser } from "./domParser";
 
 export async function discGolfMetrixUpdateCompetitionScores2(
   props: {
-    competitionParticipantId: number;
+    competitionParticipantId: string;
     holeIndex: number;
     result: number;
     // Did the drive land inside the 3m circle?

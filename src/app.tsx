@@ -21,6 +21,7 @@ import {
 import { getCookie } from "vinxi/http";
 
 import "./app.css";
+import { Toaster } from "./components/ui/toast";
 
 // type UserAuth =
 //   | { state: "logged-in"; token: string; expiresAt: number }
@@ -131,6 +132,7 @@ export default function App() {
           <QueryClientProvider client={new QueryClient()}>
             <ColorModeScript storageType={storageManager.type} />
             <ColorModeProvider storageManager={storageManager}>
+              <Toaster />
               <Nav />
               {/* <UserTokenProvider> */}
               <Suspense fallback={<div>ROUTER FALLBACK</div>}>
