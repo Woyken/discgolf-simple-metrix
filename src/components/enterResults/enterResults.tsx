@@ -305,6 +305,7 @@ function EnterHoleResults(props: {
       variant: "success",
       title: "Saved scores",
       description: "Successfully saved scores",
+      duration: 2000,
     });
   });
 
