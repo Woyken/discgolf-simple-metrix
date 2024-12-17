@@ -276,7 +276,7 @@ function EnterHoleResults(props: {
   return (
     <>
       <div class="space-y-4">
-        <h4 class="text-sm font-medium">Lorem ipsum dolor sit.</h4>
+        <h4 class="text-sm font-medium">Hole {props.holeId}</h4>
         <div class="grid gap-6">
           <For each={props.competitionData.scorecards}>
             {(scorecard) => {
