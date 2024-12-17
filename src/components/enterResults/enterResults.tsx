@@ -308,14 +308,6 @@ function EnterHoleResults(props: {
     });
   });
 
-  createEffect(() => {
-    if (!updateScoresMutation.isPending) return;
-    showToast({
-      variant: "default",
-      title: "Saving scores...",
-    });
-  });
-
   return (
     <>
       <div class="space-y-4">
