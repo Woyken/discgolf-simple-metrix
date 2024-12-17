@@ -8,7 +8,7 @@ import {
 } from "solid-js";
 import { createStore, produce, unwrap } from "solid-js/store";
 
-import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   Pagination,
   PaginationEllipsis,
@@ -32,6 +32,8 @@ import {
 } from "../ui/dropdown-menu";
 import { discGolfMetrixUpdateCompetitionScores2 } from "~/apiWrapper/updateCompetitionScores";
 import { showToast } from "../ui/toast";
+import { discGolfMetrixUrl } from "~/apiWrapper/urlBase";
+import { useSearchParams } from "@solidjs/router";
 
 const idbStore = createIdbStore("w-db", "competition-throws");
 
@@ -189,7 +191,13 @@ function EnterCompetitionResults(props: {
   const throwsStore = useParticipantThrows(
     () => props.competitionData.competition.ID
   );
-  const [activeHole, setActiveHole] = createSignal(1);
+  const [searchParams, setSearchParams] = useSearchParams<{ holeId: string }>();
+  const activeHoleId = createMemo(() => {
+    if (!searchParams.holeId) return 1;
+    const p = parseInt(searchParams.holeId);
+    if (isNaN(p)) return 1;
+    return p;
+  });
 
   return (
     <>
@@ -197,15 +205,17 @@ function EnterCompetitionResults(props: {
         competitionData={props.competitionData}
         store={throwsStore}
         competitionId={props.competitionData.competition.ID}
-        holeId={activeHole()}
+        holeId={activeHoleId()}
       />
       <Pagination
         count={props.competitionData.course.Tracks.length}
         fixedItems
-        page={activeHole()}
+        page={activeHoleId()}
         itemComponent={(props) => (
           <PaginationItem
-            onClick={() => setActiveHole(props.page)}
+            onClick={() =>
+              setSearchParams({ holeId: props.page }, { replace: true })
+            }
             page={props.page}
           >
             {props.page}
@@ -314,12 +324,24 @@ function EnterHoleResults(props: {
 
               return (
                 <>
-                  <div class="flex flex-col overflow-hidden">
+                  <div class="flex flex-col overflow-hidden space-y-4">
                     <div class="flex items-center justify-between space-x-4">
                       <div class="flex items-center space-x-4">
                         <Avatar>
-                          {/* <AvatarImage src="/avatars/03.png" /> */}
-                          <AvatarFallback>{scorecard.Name}</AvatarFallback>
+                          <AvatarImage
+                            alt="User avatar"
+                            src={
+                              new URL(
+                                `/profile/${scorecard.Image}`,
+                                discGolfMetrixUrl
+                              ).href
+                            }
+                          />
+                          <AvatarFallback>
+                            {scorecard.Name.split(" ")
+                              .map((x) => x[0])
+                              .join("")}
+                          </AvatarFallback>
                         </Avatar>
                         <div>
                           <p class="text-sm font-medium leading-none">
@@ -448,6 +470,15 @@ function EnterHoleResults(props: {
                       <For each={throwsForHole()}>
                         {(t) => <div>{t.landed}</div>}
                       </For>
+                    </div>
+                    <div class="flex space-x-4 overflow-auto">
+                      <div>Saved Metrix data</div>
+                      <div>
+                        Result: {scorecard.Results[props.holeId].Result}
+                      </div>
+                      <div>
+                        Penalty: {scorecard.Results[props.holeId].Penalty}
+                      </div>
                     </div>
                   </div>
                 </>
