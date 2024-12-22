@@ -201,7 +201,7 @@ function ResultsPage(props: {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  href={`/courses/${props.results.course.UserID}`}
+                  href={`/courses/${props.results.competition.CourceID}`}
                 >
                   {props.results.course.Name}
                 </BreadcrumbLink>
