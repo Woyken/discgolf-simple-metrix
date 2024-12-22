@@ -129,7 +129,15 @@ export default function App() {
     <Router
       root={(props) => (
         <>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider
+            client={
+              new QueryClient({
+                defaultOptions: {
+                  queries: { experimental_prefetchInRender: true },
+                },
+              })
+            }
+          >
             <ColorModeScript storageType={storageManager.type} />
             <ColorModeProvider storageManager={storageManager}>
               <Toaster />
