@@ -133,7 +133,11 @@ export default function App() {
             client={
               new QueryClient({
                 defaultOptions: {
-                  queries: { experimental_prefetchInRender: true },
+                  queries: {
+                    experimental_prefetchInRender: true,
+                    staleTime: 5 * 60 * 1000,
+                    gcTime: 2 * 24 * 60 * 60 * 1000,
+                  },
                 },
               })
             }
