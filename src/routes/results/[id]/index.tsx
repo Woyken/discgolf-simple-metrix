@@ -147,7 +147,6 @@ function ResultsPage(props: {
           (player) =>
             ({
               get diff() {
-                console.log(props.results);
                 const diff = Object.values(player.Results).reduce(
                   (prev: number, curr) => {
                     if (curr === undefined) return prev;
