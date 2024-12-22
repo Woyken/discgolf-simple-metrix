@@ -203,7 +203,7 @@ function ResultsPage(props: {
                 <BreadcrumbLink
                   href={`/courses/${props.results.competition.CourceID}`}
                 >
-                  {props.results.course.Name}
+                  {props.results.competition.CourseName}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
