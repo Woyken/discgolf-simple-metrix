@@ -1,5 +1,5 @@
 import { createQuery } from "@tanstack/solid-query";
-import { Accessor, createMemo, Match, Suspense, Switch } from "solid-js";
+import { Accessor, createMemo, Suspense } from "solid-js";
 import { discGolfMetrixGetPlayer } from "~/apiWrapper/player";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
@@ -14,6 +14,8 @@ function usePlayerQuery(id: Accessor<number>) {
 }
 
 export function PlayerAvatar(props: { playerId: number; playerName?: string }) {
+  const playerQuery = usePlayerQuery(() => props.playerId);
+
   return (
     <Avatar>
       <Suspense
@@ -23,7 +25,10 @@ export function PlayerAvatar(props: { playerId: number; playerName?: string }) {
           />
         }
       >
-        <PlayerAvatarWithQuery playerId={props.playerId} />
+        <AvatarImage src={playerQuery.data?.profilePictureUrl?.href} />
+        <PlayerAvatarFromNameBody
+          playerName={playerQuery.data?.playerName ?? ""}
+        />
       </Suspense>
     </Avatar>
   );
@@ -36,21 +41,6 @@ export function PlayerAvatarFromName(props: { playerName: string }) {
 function PlayerAvatarFromNameBody(props: { playerName: string }) {
   const shortName = createMemo(() => getPlayerNameInitials(props.playerName));
   return <AvatarFallback>{shortName()}</AvatarFallback>;
-}
-
-function PlayerAvatarWithQuery(props: { playerId: number }) {
-  const playerQuery = usePlayerQuery(() => props.playerId);
-
-  return (
-    <Switch>
-      <Match when={playerQuery.data?.profilePictureUrl}>
-        {(profilePictureUrl) => <AvatarImage src={profilePictureUrl().href} />}
-      </Match>
-      <Match when={playerQuery.data?.playerName}>
-        {(name) => <PlayerAvatarFromNameBody playerName={name()} />}
-      </Match>
-    </Switch>
-  );
 }
 
 function getPlayerNameInitials(name: string) {
