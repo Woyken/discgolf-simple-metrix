@@ -10,21 +10,21 @@ import { type Accessor, For, Show, createMemo } from 'solid-js';
 import type { discGolfMetrixGetCompetitionThrows } from '~/apiWrapper/getCompetitionThrows';
 import { getCompetitionThrowsQueryOptions } from '~/components/mapbox/query/query';
 import { PlayerAvatar, PlayerAvatarFromName } from '~/components/playerAvatar';
-import { QueryBoundary } from '~/components/queryBoundary';
+import { QueryBoundary } from '~/components/queryBoundary_renameme';
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from '~/components/ui/breadcrumb';
+} from '~/components/ui/breadcrumb_renameme';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '~/components/ui/select';
+} from '~/components/ui/select_renameme';
 import {
   Table,
   TableBody,
@@ -32,7 +32,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '~/components/ui/table';
+} from '~/components/ui/table_renameme';
 
 function useCompetitionScoresQuery(competitionId: Accessor<string>) {
   return createQuery(() => getCompetitionThrowsQueryOptions(competitionId()));

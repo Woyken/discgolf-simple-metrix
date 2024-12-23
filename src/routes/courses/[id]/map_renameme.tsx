@@ -8,7 +8,7 @@ import {
 } from '~/components/googleMaps/query/query';
 
 const RenderCourseMap = clientOnly(() =>
-  import('~/components/renderCourseMap').then((x) => ({
+  import('~/components/renderCourseMap_renameme').then((x) => ({
     default: x.RenderCourseMap,
   })),
 );

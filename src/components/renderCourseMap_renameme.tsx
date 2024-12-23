@@ -1,6 +1,6 @@
-import { GoogleMapsLoaderProvider } from './googleMaps/loaderProvider.ts';
-import { GoogleMapsMapsLibraryProvider } from './googleMaps/mapsLibraryProvider.ts';
-import { GoogleMapsRender } from './googleMaps/render.ts';
+import { GoogleMapsLoaderProvider } from './googleMaps/loaderProvider_renameme.tsx';
+import { GoogleMapsMapsLibraryProvider } from './googleMaps/mapsLibraryProvider_renameme.tsx';
+import { GoogleMapsRender } from './googleMaps/render_renameme.tsx';
 
 export function RenderCourseMap(props: {
   apiKey: string;

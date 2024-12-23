@@ -10,13 +10,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
 import { Suspense } from 'solid-js';
 import { isServer } from 'solid-js/web';
 import { getCookie } from 'vinxi/http';
-import { NavHandleLogin } from './components/nav.tsx';
-import { Toaster } from './components/ui/toast.ts';
+import { NavHandleLogin } from './components/nav_renameme.tsx';
+import { Toaster } from './components/ui/toast_renameme.tsx';
 
 import './app.css';
 
 const ReloadPrompt = clientOnly(() =>
-  import('./components/reloadPrompt.ts').then((x) => ({
+  import('./components/reloadPrompt_renameme.tsx').then((x) => ({
     default: x.ReloadPrompt,
   })),
 );

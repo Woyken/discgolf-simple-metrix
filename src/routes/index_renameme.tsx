@@ -1,4 +1,4 @@
-import { MyHistory } from '~/components/myHistory';
+import { MyHistory } from '~/components/myHistory_renameme';
 
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(() => resolve(undefined), ms));

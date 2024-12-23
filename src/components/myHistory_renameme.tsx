@@ -9,8 +9,8 @@ import {
 } from '@tanstack/solid-table';
 import { For, Suspense, createMemo } from 'solid-js';
 import { discGolfMetrixGetCompetitionsList } from '~/apiWrapper/listCompetitions';
-import { Button } from './ui/button.tsx';
-import { Skeleton } from './ui/skeleton.ts';
+import { Button } from './ui/button_renameme.tsx';
+import { Skeleton } from './ui/skeleton_renameme.tsx';
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './ui/table.ts';
+} from './ui/table_renameme.tsx';
 
 export function MyHistory() {
   return (
