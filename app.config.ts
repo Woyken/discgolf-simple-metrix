@@ -10,7 +10,7 @@ export default defineConfig({
         workbox: {
           globPatterns: ['**!(node_modules)/*.{js,wasm,css,html}'],
         },
-        includeAssets: ['**/*'],
+        includeAssets: ['**!(node_modules)/*'],
         manifest: {
           // biome-ignore lint/style/useNamingConvention: API
           theme_color: '#f69435',
