@@ -1,5 +1,6 @@
-import { A, useParams } from "@solidjs/router";
+import { A, useParams } from '@solidjs/router';
 
+// biome-ignore lint/style/noDefaultExport: Required for route
 export default function CoursePage() {
   const params = useParams<{ id: string }>();
   return (

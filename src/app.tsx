@@ -1,27 +1,18 @@
-import { Router } from "@solidjs/router";
-import { FileRoutes } from "@solidjs/start/router";
-import {
-  createContext,
-  createEffect,
-  createMemo,
-  createSignal,
-  ParentProps,
-  Signal,
-  Suspense,
-  useContext,
-} from "solid-js";
-import { isServer } from "solid-js/web";
-import Nav from "~/components/nav";
-import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import {
   ColorModeProvider,
   ColorModeScript,
   cookieStorageManagerSSR,
-} from "@kobalte/core";
-import { getCookie } from "vinxi/http";
+} from '@kobalte/core';
+import { Router } from '@solidjs/router';
+import { FileRoutes } from '@solidjs/start/router';
+import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
+import { Suspense } from 'solid-js';
+import { isServer } from 'solid-js/web';
+import { getCookie } from 'vinxi/http';
+import { NavHandleLogin } from './components/nav.tsx';
+import { Toaster } from './components/ui/toast.ts';
 
-import "./app.css";
-import { Toaster } from "./components/ui/toast";
+import './app.css';
 
 // type UserAuth =
 //   | { state: "logged-in"; token: string; expiresAt: number }
@@ -116,14 +107,15 @@ import { Toaster } from "./components/ui/toast";
 // }
 
 function getServerCookies() {
-  "use server";
-  const colorMode = getCookie("kb-color-mode");
-  return colorMode ? `kb-color-mode=${colorMode}` : "";
+  'use server';
+  const colorMode = getCookie('kb-color-mode');
+  return colorMode ? `kb-color-mode=${colorMode}` : '';
 }
 
+// biome-ignore lint/style/noDefaultExport: Required by framework
 export default function App() {
   const storageManager = cookieStorageManagerSSR(
-    isServer ? getServerCookies() : document.cookie
+    isServer ? getServerCookies() : document.cookie,
   );
   return (
     <Router
@@ -134,6 +126,7 @@ export default function App() {
               new QueryClient({
                 defaultOptions: {
                   queries: {
+                    // biome-ignore lint/style/useNamingConvention: that's the API
                     experimental_prefetchInRender: true,
                     staleTime: 5 * 60 * 1000,
                     gcTime: 2 * 24 * 60 * 60 * 1000,
@@ -145,7 +138,7 @@ export default function App() {
             <ColorModeScript storageType={storageManager.type} />
             <ColorModeProvider storageManager={storageManager}>
               <Toaster />
-              <Nav />
+              <NavHandleLogin />
               {/* <UserTokenProvider> */}
               <Suspense fallback={<div>ROUTER FALLBACK</div>}>
                 {props.children}

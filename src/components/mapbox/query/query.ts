@@ -1,10 +1,10 @@
-import { queryOptions } from "@tanstack/solid-query";
-import { discGolfMetrixGetCompetitionThrows } from "~/apiWrapper/getCompetitionThrows";
-import { discGolfMetrixGetMapboxAccessToken } from "~/apiWrapper/getMapboxAccessToken";
+import { queryOptions } from '@tanstack/solid-query';
+import { discGolfMetrixGetCompetitionThrows } from '~/apiWrapper/getCompetitionThrows';
+import { discGolfMetrixGetMapboxAccessToken } from '~/apiWrapper/getMapboxAccessToken';
 
 export function getMapboxAccessTokenQueryOptions() {
   return queryOptions({
-    queryKey: ["mapbox access token"],
+    queryKey: ['mapbox access token'],
     queryFn: async () => {
       const result = await discGolfMetrixGetMapboxAccessToken();
       return result;
@@ -15,7 +15,7 @@ export function getMapboxAccessTokenQueryOptions() {
 
 export function getCompetitionThrowsQueryOptions(competitionId: string) {
   return queryOptions({
-    queryKey: ["competition throws", competitionId],
+    queryKey: ['competition throws', competitionId],
     queryFn: async () => {
       const result = await discGolfMetrixGetCompetitionThrows(competitionId);
       return result;

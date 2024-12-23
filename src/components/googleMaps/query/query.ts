@@ -1,11 +1,11 @@
-import { queryOptions, createQuery } from "@tanstack/solid-query";
-import { Accessor } from "solid-js";
-import { discGolfMetrixGetCourseMapData } from "~/apiWrapper/getCourseMapData";
-import { discGolfMetrixGetGoogleMapsKey } from "~/apiWrapper/getGoogleMapsKey";
+import { createQuery, queryOptions } from '@tanstack/solid-query';
+import type { Accessor } from 'solid-js';
+import { discGolfMetrixGetCourseMapData } from '~/apiWrapper/getCourseMapData';
+import { discGolfMetrixGetGoogleMapsKey } from '~/apiWrapper/getGoogleMapsKey';
 
 export function getCourseMapDataQueryOptions(courseId: string) {
   return queryOptions({
-    queryKey: ["courseMapData", courseId],
+    queryKey: ['courseMapData', courseId],
     queryFn: async () => {
       const result = await discGolfMetrixGetCourseMapData(courseId);
       return result;
@@ -16,7 +16,7 @@ export function getCourseMapDataQueryOptions(courseId: string) {
 
 export function useCourseMapGoogleMapsKeyQuery(courseId: Accessor<string>) {
   return createQuery(() => ({
-    queryKey: ["courseMapGoogleMapsKey", courseId()],
+    queryKey: ['courseMapGoogleMapsKey', courseId()],
     queryFn: async () => {
       const result = await discGolfMetrixGetGoogleMapsKey(courseId());
       return result;

@@ -1,5 +1,5 @@
-import type { Accessor } from "solid-js";
-import { createMemo, createSignal, onCleanup } from "solid-js";
+import type { Accessor } from 'solid-js';
+import { createMemo, createSignal, onCleanup } from 'solid-js';
 
 const geolocationDefaults: PositionOptions = {
   enableHighAccuracy: false,
@@ -22,7 +22,7 @@ export const createGeolocation = (options: Accessor<PositionOptions>) => {
         setLocation();
         setError(e);
       },
-      opt
+      opt,
     );
   };
 
@@ -34,7 +34,7 @@ export const createGeolocation = (options: Accessor<PositionOptions>) => {
     const watch = navigator.geolocation.watchPosition(
       setLocation,
       setError,
-      opt
+      opt,
     );
     onCleanup(() => navigator.geolocation.clearWatch(watch));
   });

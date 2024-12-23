@@ -1,11 +1,11 @@
-import { createQuery } from "@tanstack/solid-query";
-import { Accessor, createMemo, Suspense } from "solid-js";
-import { discGolfMetrixGetPlayer } from "~/apiWrapper/player";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { createQuery } from '@tanstack/solid-query';
+import { type Accessor, Suspense, createMemo } from 'solid-js';
+import { discGolfMetrixGetPlayer } from '~/apiWrapper/player';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.ts';
 
 function usePlayerQuery(id: Accessor<number>) {
   return createQuery(() => ({
-    queryKey: ["playerData", id()],
+    queryKey: ['playerData', id()],
     queryFn: async () => {
       const result = await discGolfMetrixGetPlayer(id());
       return result;
@@ -27,7 +27,7 @@ export function PlayerAvatar(props: { playerId: number; playerName?: string }) {
       >
         <AvatarImage src={playerQuery.data?.profilePictureUrl?.href} />
         <PlayerAvatarFromNameBody
-          playerName={playerQuery.data?.playerName ?? ""}
+          playerName={playerQuery.data?.playerName ?? ''}
         />
       </Suspense>
     </Avatar>
@@ -44,11 +44,11 @@ function PlayerAvatarFromNameBody(props: { playerName: string }) {
 }
 
 function getPlayerNameInitials(name: string) {
-  const split = name.split(" ");
+  const split = name.split(' ');
   if (split.length < 2) return name.slice(0, 2);
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- checked length
-  return [split[0], split.at(-1)!]
-    .map((x) => x.slice(0, 1))
-    .join("")
+  return [split[0], split.at(-1)]
+    .map((x) => x?.slice(0, 1))
+    .join('')
     .toUpperCase();
 }

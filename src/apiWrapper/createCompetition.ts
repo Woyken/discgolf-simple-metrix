@@ -10,43 +10,43 @@
 // https://discgolfmetrix.com/?u=competition_add&competitiontype=3&courseid=&custom_course=9&parentid=&record_type=2
 // multiday_value=0&date=2024-09-30&time=09%3A18&start_date=2024-09-30&end_date=2024-09-30&name=Competition+name&comment=&game_mode=r&accesslevel=0&payment_yes=0&SaveStart=Create+and+start
 
-import { getCookie } from "vinxi/http";
-import { discGolfMetrixUrl } from "./urlBase";
-import { redirect } from "@solidjs/router";
-import { getDomParser } from "./domParser";
+import { redirect } from '@solidjs/router';
+import { getCookie } from 'vinxi/http';
+import { getDomParser } from './domParser.ts';
+import { discGolfMetrixUrl } from './urlBase.ts';
 
 export async function discGolfMetrixCreateCompetition(
   courseId: number,
-  training: boolean
+  training: boolean,
 ) {
-  "use server";
+  'use server';
 
-  const token = getCookie("token");
-  if (!token) return redirect("/login");
+  const token = getCookie('token');
+  if (!token) return redirect('/login');
 
-  const url = new URL("/?u=competition_add", discGolfMetrixUrl);
-  if (training) url.searchParams.set("create_training", "1");
-  url.searchParams.set("courseid", courseId.toString());
+  const url = new URL('/?u=competition_add', discGolfMetrixUrl);
+  if (training) url.searchParams.set('create_training', '1');
+  url.searchParams.set('courseid', courseId.toString());
 
   const response = await fetch(url, {
     headers: {
-      Cookie: token,
+      cookie: token,
     },
-    method: "GET",
+    method: 'GET',
   });
-  if (!response.ok) throw new Error("Competition creation failed");
+  if (!response.ok) throw new Error('Competition creation failed');
 
   const text = await response.text();
-  const DOMParser = await getDomParser();
-  const parser = new DOMParser();
-  const parsedHtml = parser.parseFromString(text, "text/html");
-  const competitionIdStr = [...parsedHtml.querySelectorAll(".breadcrumbs a")]
+  const domParser = await getDomParser();
+  const parser = new domParser();
+  const parsedHtml = parser.parseFromString(text, 'text/html');
+  const competitionIdStr = [...parsedHtml.querySelectorAll('.breadcrumbs a')]
     .at(-1)
-    ?.getAttribute("href")
-    ?.split("/")
+    ?.getAttribute('href')
+    ?.split('/')
     .at(-1);
-  if (!competitionIdStr) throw new Error("missing competition id");
-  const competitionId = parseInt(competitionIdStr);
+  if (!competitionIdStr) throw new Error('missing competition id');
+  const competitionId = Number.parseInt(competitionIdStr);
 
   return {
     competitionId,

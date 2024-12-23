@@ -1,6 +1,7 @@
 // @refresh reload
-import { createHandler, StartServer } from "@solidjs/start/server";
+import { StartServer, createHandler } from '@solidjs/start/server';
 
+// biome-ignore lint/style/noDefaultExport: Required by API
 export default createHandler(() => (
   <StartServer
     document={({ assets, children, scripts }) => (

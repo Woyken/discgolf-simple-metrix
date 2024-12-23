@@ -1,23 +1,32 @@
 import {
+  type ParentProps,
+  Show,
   createContext,
   createResource,
-  ParentProps,
-  Show,
   useContext,
-} from "solid-js";
-import { useGoogleMapsLoader } from "./loaderProvider";
+} from 'solid-js';
+import { useGoogleMapsLoader } from './loaderProvider.ts';
 
-const ctx = createContext<{ mapsLibrary: google.maps.MapsLibrary }>();
+const ctx = createContext<{
+  mapsLibrary: NonNullable<
+    ReturnType<ReturnType<typeof createResourceToGetMapsLibrary>>
+  >;
+}>();
 
 export function useGoogleMapsMapsLibrary() {
   const value = useContext(ctx);
-  if (!value) throw new Error("Missing GoogleMapsMapsLibraryProvider");
+  if (!value) throw new Error('Missing GoogleMapsMapsLibraryProvider');
   return value;
 }
 
-export function GoogleMapsMapsLibraryProvider(props: ParentProps) {
+function createResourceToGetMapsLibrary() {
   const x = useGoogleMapsLoader();
-  const [mapsLibrary] = createResource(() => x.loader.importLibrary("maps"));
+  const [mapsLibrary] = createResource(() => x.loader.importLibrary('maps'));
+  return mapsLibrary;
+}
+
+export function GoogleMapsMapsLibraryProvider(props: ParentProps) {
+  const mapsLibrary = createResourceToGetMapsLibrary();
 
   return (
     <Show when={mapsLibrary()}>

@@ -1,7 +1,8 @@
-import type { CreateQueryResult } from "@tanstack/solid-query";
-import type { JSX } from "solid-js";
-import { ErrorBoundary, Match, Suspense, Switch } from "solid-js";
-import { Button } from "./ui/button";
+import type { CreateQueryResult } from '@tanstack/solid-query';
+import type { JSX } from 'solid-js';
+import { ErrorBoundary, Match, Suspense, Switch } from 'solid-js';
+import { getLogger } from '~/lib/logger.ts';
+import { Button } from './ui/button.ts';
 
 export interface QueryBoundaryProps<T = unknown> {
   query: CreateQueryResult<T, Error | unknown>;
@@ -36,7 +37,7 @@ export function QueryBoundary<T>(props: QueryBoundaryProps<T>) {
     <Suspense fallback={props.loadingFallback}>
       <ErrorBoundary
         fallback={(err: Error, reset) => {
-          console.error(err);
+          getLogger().error(err);
           return props.errorFallback ? (
             props.errorFallback(err, async () => {
               await props.query.refetch();
@@ -75,7 +76,7 @@ export function QueryBoundary<T>(props: QueryBoundaryProps<T>) {
             )}
           </Match> */}
 
-          <Match when={!props.query.isFetching && !props.query.data}>
+          <Match when={!(props.query.isFetching || props.query.data)}>
             {props.notFoundFallback ? (
               props.notFoundFallback
             ) : (
@@ -85,7 +86,7 @@ export function QueryBoundary<T>(props: QueryBoundaryProps<T>) {
 
           <Match when={props.query.data}>
             {props.children(
-              props.query.data as Exclude<T, null | false | undefined>
+              props.query.data as Exclude<T, null | false | undefined>,
             )}
           </Match>
         </Switch>

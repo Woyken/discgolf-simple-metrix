@@ -1,7 +1,17 @@
-import { A, useLocation } from "@solidjs/router";
-import { createQuery } from "@tanstack/solid-query";
-import { createMemo, Show, Suspense } from "solid-js";
-import { discGolfMetrixGetAccountSettings } from "~/apiWrapper/getAccountSettings";
+import { A, useLocation } from '@solidjs/router';
+import { createQuery } from '@tanstack/solid-query';
+import { Show, Suspense, createMemo } from 'solid-js';
+import { discGolfMetrixGetAccountSettings } from '~/apiWrapper/getAccountSettings';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.ts';
+import { Button } from './ui/button.ts';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu.ts';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,21 +21,11 @@ import {
   NavigationMenuLabel,
   NavigationMenuLink,
   NavigationMenuTrigger,
-} from "./ui/navigation-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+} from './ui/navigation-menu.ts';
 
 const useSettingsQuery = () => {
   return createQuery(() => ({
-    queryKey: ["settings"],
+    queryKey: ['settings'],
     queryFn: async () => {
       const result = await discGolfMetrixGetAccountSettings();
       return result;
@@ -33,9 +33,9 @@ const useSettingsQuery = () => {
   }));
 };
 
-export default function NavHandleLogin() {
+export function NavHandleLogin() {
   const location = useLocation();
-  const isLoggedIn = createMemo(() => location.pathname !== "/login");
+  const isLoggedIn = createMemo(() => location.pathname !== '/login');
   return (
     <Show when={isLoggedIn()}>
       <Nav />
@@ -152,7 +152,7 @@ function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        as={Button<"button">}
+        as={Button<'button'>}
         variant="ghost"
         class="relative h-8 w-8 rounded-full"
       >
@@ -162,8 +162,8 @@ function UserNav() {
               when={settingsQuery.data?.imageUrl}
               fallback={
                 <AvatarFallback>
-                  {settingsQuery.data?.firstName?.[0].toUpperCase() ?? "F"}
-                  {settingsQuery.data?.lastName?.[0].toUpperCase() ?? "L"}
+                  {settingsQuery.data?.firstName?.[0].toUpperCase() ?? 'F'}
+                  {settingsQuery.data?.lastName?.[0].toUpperCase() ?? 'L'}
                 </AvatarFallback>
               }
             >

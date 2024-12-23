@@ -1,8 +1,8 @@
-import { GoogleMapsLoaderProvider } from "./googleMaps/loaderProvider";
-import { GoogleMapsMapsLibraryProvider } from "./googleMaps/mapsLibraryProvider";
-import { GoogleMapsRender } from "./googleMaps/render";
+import { GoogleMapsLoaderProvider } from './googleMaps/loaderProvider.ts';
+import { GoogleMapsMapsLibraryProvider } from './googleMaps/mapsLibraryProvider.ts';
+import { GoogleMapsRender } from './googleMaps/render.ts';
 
-export default function RenderCourseMap(props: {
+export function RenderCourseMap(props: {
   apiKey: string;
   courseId: string;
 }) {

@@ -1,61 +1,78 @@
-import type { Component, ComponentProps, JSX, ValidComponent } from "solid-js"
-import { Show, splitProps } from "solid-js"
+import type { Component, ComponentProps, JSX, ValidComponent } from 'solid-js';
+import { Show, splitProps } from 'solid-js';
 
-import type { PolymorphicProps } from "@kobalte/core"
-import * as BreadcrumbPrimitive from "@kobalte/core/breadcrumbs"
+import type { PolymorphicProps } from '@kobalte/core';
+import {
+  type BreadcrumbsLinkProps as BreadcrumbPrimitiveBreadcrumbsLinkProps,
+  type BreadcrumbsSeparatorProps as BreadcrumbPrimitiveBreadcrumbsSeparatorProps,
+  Link as BreadcrumbPrimitiveLink,
+  Root as BreadcrumbPrimitiveRoot,
+  Separator as BreadcrumbPrimitiveSeparator,
+} from '@kobalte/core/breadcrumbs';
 
-import { cn } from "~/lib/utils"
+import { cn } from '~/lib/utils';
 
-const Breadcrumb = BreadcrumbPrimitive.Root
+const Breadcrumb = BreadcrumbPrimitiveRoot;
 
-const BreadcrumbList: Component<ComponentProps<"ol">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
+const BreadcrumbList: Component<ComponentProps<'ol'>> = (props) => {
+  const [local, others] = splitProps(props, ['class']);
   return (
     <ol
       class={cn(
-        "flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5",
-        local.class
+        'flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5',
+        local.class,
       )}
       {...others}
     />
-  )
-}
+  );
+};
 
-const BreadcrumbItem: Component<ComponentProps<"li">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
-  return <li class={cn("inline-flex items-center gap-1.5", local.class)} {...others} />
-}
-
-type BreadcrumbLinkProps<T extends ValidComponent = "a"> =
-  BreadcrumbPrimitive.BreadcrumbsLinkProps<T> & { class?: string | undefined }
-
-const BreadcrumbLink = <T extends ValidComponent = "a">(
-  props: PolymorphicProps<T, BreadcrumbLinkProps<T>>
-) => {
-  const [local, others] = splitProps(props as BreadcrumbLinkProps, ["class"])
+const BreadcrumbItem: Component<ComponentProps<'li'>> = (props) => {
+  const [local, others] = splitProps(props, ['class']);
   return (
-    <BreadcrumbPrimitive.Link
+    <li
+      class={cn('inline-flex items-center gap-1.5', local.class)}
+      {...others}
+    />
+  );
+};
+
+type BreadcrumbLinkProps<T extends ValidComponent = 'a'> =
+  BreadcrumbPrimitiveBreadcrumbsLinkProps<T> & { class?: string | undefined };
+
+const BreadcrumbLink = <T extends ValidComponent = 'a'>(
+  props: PolymorphicProps<T, BreadcrumbLinkProps<T>>,
+) => {
+  const [local, others] = splitProps(props as BreadcrumbLinkProps, ['class']);
+  return (
+    <BreadcrumbPrimitiveLink
       class={cn(
-        "transition-colors hover:text-foreground data-[current]:font-normal data-[current]:text-foreground",
-        local.class
+        'transition-colors hover:text-foreground data-[current]:font-normal data-[current]:text-foreground',
+        local.class,
       )}
       {...others}
     />
-  )
-}
+  );
+};
 
-type BreadcrumbSeparatorProps<T extends ValidComponent = "span"> =
-  BreadcrumbPrimitive.BreadcrumbsSeparatorProps<T> & {
-    class?: string | undefined
-    children?: JSX.Element
-  }
+type BreadcrumbSeparatorProps<T extends ValidComponent = 'span'> =
+  BreadcrumbPrimitiveBreadcrumbsSeparatorProps<T> & {
+    class?: string | undefined;
+    children?: JSX.Element;
+  };
 
-const BreadcrumbSeparator = <T extends ValidComponent = "span">(
-  props: PolymorphicProps<T, BreadcrumbSeparatorProps<T>>
+const BreadcrumbSeparator = <T extends ValidComponent = 'span'>(
+  props: PolymorphicProps<T, BreadcrumbSeparatorProps<T>>,
 ) => {
-  const [local, others] = splitProps(props as BreadcrumbSeparatorProps, ["class", "children"])
+  const [local, others] = splitProps(props as BreadcrumbSeparatorProps, [
+    'class',
+    'children',
+  ]);
   return (
-    <BreadcrumbPrimitive.Separator class={cn("[&>svg]:size-3.5", local.class)} {...others}>
+    <BreadcrumbPrimitiveSeparator
+      class={cn('[&>svg]:size-3.5', local.class)}
+      {...others}
+    >
       <Show
         when={local.children}
         fallback={
@@ -68,20 +85,24 @@ const BreadcrumbSeparator = <T extends ValidComponent = "span">(
             stroke-linecap="round"
             stroke-linejoin="round"
           >
+            <title>Breadcrumb separator</title>
             <path d="M9 6l6 6l-6 6" />
           </svg>
         }
       >
         {local.children}
       </Show>
-    </BreadcrumbPrimitive.Separator>
-  )
-}
+    </BreadcrumbPrimitiveSeparator>
+  );
+};
 
-const BreadcrumbEllipsis: Component<ComponentProps<"span">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
+const BreadcrumbEllipsis: Component<ComponentProps<'span'>> = (props) => {
+  const [local, others] = splitProps(props, ['class']);
   return (
-    <span class={cn("flex size-9 items-center justify-center", local.class)} {...others}>
+    <span
+      class={cn('flex size-9 items-center justify-center', local.class)}
+      {...others}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
@@ -92,14 +113,15 @@ const BreadcrumbEllipsis: Component<ComponentProps<"span">> = (props) => {
         stroke-linejoin="round"
         class="size-4"
       >
+        <title>Breadcrumb ellipsis</title>
         <path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
         <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
         <path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
       </svg>
       <span class="sr-only">More</span>
     </span>
-  )
-}
+  );
+};
 
 export {
   Breadcrumb,
@@ -107,5 +129,5 @@ export {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
-  BreadcrumbEllipsis
-}
+  BreadcrumbEllipsis,
+};

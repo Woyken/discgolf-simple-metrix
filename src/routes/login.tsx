@@ -1,20 +1,20 @@
-import { useNavigate } from "@solidjs/router";
-import { createMutation } from "@tanstack/solid-query";
-import { discGolfMetrixLogin } from "~/apiWrapper/login";
-import { Button } from "~/components/ui/button";
+import {
+  type FieldStore,
+  createForm,
+  email,
+  minLength,
+  required,
+} from '@modular-forms/solid';
+import { useNavigate } from '@solidjs/router';
+import { createMutation } from '@tanstack/solid-query';
+import { discGolfMetrixLogin } from '~/apiWrapper/login';
+import { Button } from '~/components/ui/button';
+import { Grid } from '~/components/ui/grid';
 import {
   TextField,
   TextFieldInput,
   TextFieldLabel,
-} from "~/components/ui/text-field";
-import {
-  createForm,
-  required,
-  email,
-  minLength,
-  FieldStore,
-} from "@modular-forms/solid";
-import { Grid } from "~/components/ui/grid";
+} from '~/components/ui/text-field';
 
 function useLoginMutation() {
   return createMutation(() => ({
@@ -28,6 +28,7 @@ function useLoginMutation() {
   }));
 }
 
+// biome-ignore lint/style/noDefaultExport: Required for route
 export default function Login() {
   return <LoginForm />;
 }
@@ -54,17 +55,18 @@ function LoginForm() {
                   email: value.email,
                   password: value.password,
                 });
-                navigate("/");
+                navigate('/');
               }}
             >
               <Grid class="gap-4">
                 <Field
                   name="email"
                   validate={[
-                    required("Please enter your email."),
-                    email("The email address is badly formatted."),
+                    required('Please enter your email.'),
+                    email('The email address is badly formatted.'),
                   ]}
-                  children={(field, props) => (
+                >
+                  {(field, props) => (
                     <>
                       <TextField>
                         <TextFieldLabel for="email">Email</TextFieldLabel>
@@ -72,23 +74,24 @@ function LoginForm() {
                           {...props}
                           type="email"
                           id="email"
-                          placeholder={"email@example.com"}
+                          placeholder={'email@example.com'}
                         />
                       </TextField>
                       <FieldInfo field={field} />
                     </>
                   )}
-                />
+                </Field>
                 <Field
                   name="password"
                   validate={[
-                    required("Please enter your password."),
+                    required('Please enter your password.'),
                     minLength(
                       3,
-                      "You password must have 3 characters or more."
+                      'You password must have 3 characters or more.',
                     ),
                   ]}
-                  children={(field, props) => (
+                >
+                  {(field, props) => (
                     <>
                       <TextField>
                         <TextFieldLabel for="password">Password</TextFieldLabel>
@@ -96,20 +99,20 @@ function LoginForm() {
                           {...props}
                           type="password"
                           id="password"
-                          placeholder={"***********"}
+                          placeholder={'***********'}
                         />
                       </TextField>
                       <FieldInfo field={field} />
                     </>
                   )}
-                />
+                </Field>
                 <Button type="submit" disabled={loginForm.submitting}>
                   {loginForm.submitting ? (
-                    <span class="loading loading-spinner"></span>
+                    <span class="loading loading-spinner" />
                   ) : null}
                   Login
                 </Button>
-                <p class={`text-center text-error`}>
+                <p class={'text-center text-error'}>
                   {loginMutation.error?.message}
                 </p>
               </Grid>
@@ -121,7 +124,7 @@ function LoginForm() {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: Display anything, this type is quite complex
 function FieldInfo(props: { field: FieldStore<any, any> }) {
   return <>{props.field.error ? <em>{props.field.error}</em> : null}</>;
 }

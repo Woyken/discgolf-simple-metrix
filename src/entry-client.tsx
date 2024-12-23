@@ -1,4 +1,7 @@
 // @refresh reload
-import { mount, StartClient } from "@solidjs/start/client";
+import { StartClient, mount } from '@solidjs/start/client';
 
-mount(() => <StartClient />, document.getElementById("app")!);
+const root = document.getElementById('app');
+if (!root) throw new Error('Missing root element');
+
+mount(() => <StartClient />, root);

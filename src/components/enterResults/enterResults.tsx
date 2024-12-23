@@ -1,48 +1,48 @@
-import { createStore as createIdbStore, get, set as setIdb } from "idb-keyval";
+import { createStore as createIdbStore, get, set as setIdb } from 'idb-keyval';
 import {
-  Accessor,
+  type Accessor,
+  For,
   createEffect,
   createMemo,
   createSignal,
-  For,
-} from "solid-js";
-import { createStore, produce, unwrap } from "solid-js/store";
+} from 'solid-js';
+import { createStore, produce, unwrap } from 'solid-js/store';
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import {
-  Pagination,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationItems,
-} from "../ui/pagination";
+import { useSearchParams } from '@solidjs/router';
 import {
   createMutation,
   createQuery,
   useQueryClient,
-} from "@tanstack/solid-query";
-import { getCompetitionThrowsQueryOptions } from "../mapbox/query/query";
-import { QueryBoundary } from "../queryBoundary";
-import { CompetitionThrowsResponse } from "~/apiWrapper/getCompetitionThrows";
-import { Button } from "../ui/button";
+} from '@tanstack/solid-query';
+import type { CompetitionThrowsResponse } from '~/apiWrapper/getCompetitionThrows';
+import { discGolfMetrixUpdateCompetitionScores2 } from '~/apiWrapper/updateCompetitionScores';
+import { discGolfMetrixUrl } from '~/apiWrapper/urlBase';
+import { getCompetitionThrowsQueryOptions } from '../mapbox/query/query.ts';
+import { QueryBoundary } from '../queryBoundary.ts';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.ts';
+import { Button } from '../ui/button.ts';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { discGolfMetrixUpdateCompetitionScores2 } from "~/apiWrapper/updateCompetitionScores";
-import { showToast } from "../ui/toast";
-import { discGolfMetrixUrl } from "~/apiWrapper/urlBase";
-import { useSearchParams } from "@solidjs/router";
+} from '../ui/dropdown-menu.ts';
+import {
+  Pagination,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationItems,
+} from '../ui/pagination.ts';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from '../ui/select.ts';
+import { showToast } from '../ui/toast.ts';
 
-const idbStore = createIdbStore("w-db", "competition-throws");
+const idbStore = createIdbStore('w-db', 'competition-throws');
 
 type ParticipantThrows = {
   participants: {
@@ -52,20 +52,20 @@ type ParticipantThrows = {
       throws: {
         throwId: number;
         landed:
-          | "Basket"
-          | "Circle0 0-3m"
-          | "Circle1 0-10m"
-          | "Circle2 10-20m"
-          | "Fairway"
-          | "Off fairway"
-          | "Penalty";
+          | 'Basket'
+          | 'Circle0 0-3m'
+          | 'Circle1 0-10m'
+          | 'Circle2 10-20m'
+          | 'Fairway'
+          | 'Off fairway'
+          | 'Penalty';
       }[];
     }[];
   }[];
 };
 
 type SingleThrow =
-  ParticipantThrows["participants"][0]["holes"][0]["throws"][0];
+  ParticipantThrows['participants'][0]['holes'][0]['throws'][0];
 
 function setStoreThrows(competitionId: string, throwsData: ParticipantThrows) {
   return setIdb(competitionId, throwsData, idbStore);
@@ -101,12 +101,12 @@ function useParticipantThrows(competitionId: Accessor<string>) {
     setThrow: (
       participantId: string,
       holeId: number,
-      singleThrow: SingleThrow
+      singleThrow: SingleThrow,
     ) => {
       setThrows(
         produce((throws) => {
           const scores = throws.participants.find(
-            (scores) => scores.participantId === participantId
+            (scores) => scores.participantId === participantId,
           )?.holes;
           if (!scores) {
             throws.participants.push({
@@ -131,7 +131,7 @@ function useParticipantThrows(competitionId: Accessor<string>) {
           }
 
           const foundThrow = holeThrows.find(
-            (x) => x.throwId === singleThrow.throwId
+            (x) => x.throwId === singleThrow.throwId,
           );
           if (!foundThrow) {
             holeThrows.push(singleThrow);
@@ -139,7 +139,7 @@ function useParticipantThrows(competitionId: Accessor<string>) {
           }
 
           foundThrow.landed = singleThrow.landed;
-        })
+        }),
       );
     },
     removeThrow: (participantId: string, holeId: number, throwId: number) => {
@@ -152,7 +152,7 @@ function useParticipantThrows(competitionId: Accessor<string>) {
             const i = t.findIndex((x) => x.throwId === throwId);
             t.splice(i, 1);
           }
-        })
+        }),
       );
     },
     get throws() {
@@ -169,11 +169,11 @@ function useParticipantThrows(competitionId: Accessor<string>) {
 }
 type ThrowsStore = ReturnType<typeof useParticipantThrows>;
 
-export default function EnterCompetitionResultsWithQuery(props: {
+export function EnterCompetitionResultsWithQuery(props: {
   competitionId: string;
 }) {
   const competitionScoresQuery = createQuery(() =>
-    getCompetitionThrowsQueryOptions(props.competitionId.toString())
+    getCompetitionThrowsQueryOptions(props.competitionId.toString()),
   );
 
   return (
@@ -196,7 +196,7 @@ function EnterCompetitionResults(props: {
   // No api to store GPS throw location. Just store it in IDB locally?
 
   const throwsStore = useParticipantThrows(
-    () => props.competitionData.competition.ID
+    () => props.competitionData.competition.ID,
   );
   const [searchParams, setSearchParams] = useSearchParams<{
     holeId: string;
@@ -204,13 +204,13 @@ function EnterCompetitionResults(props: {
   }>();
   const activeHoleId = createMemo(() => {
     if (!searchParams.holeId) return 1;
-    const p = parseInt(searchParams.holeId);
-    if (isNaN(p)) return 1;
+    const p = Number.parseInt(searchParams.holeId);
+    if (Number.isNaN(p)) return 1;
     return p;
   });
 
   const groupIds = createMemo(
-    () => new Set(props.competitionData.scorecards.map((s) => s.GroupName))
+    () => new Set(props.competitionData.scorecards.map((s) => s.GroupName)),
   );
 
   return (
@@ -218,10 +218,10 @@ function EnterCompetitionResults(props: {
       <Select
         value={searchParams.groupId}
         onChange={(value) => {
-          if (value === "All") return setSearchParams({ groupId: null });
+          if (value === 'All') return setSearchParams({ groupId: null });
           setSearchParams({ groupId: value });
         }}
-        options={["All", ...groupIds()]}
+        options={['All', ...groupIds()]}
         placeholder="Select a group…"
         itemComponent={(props) => (
           <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
@@ -241,7 +241,7 @@ function EnterCompetitionResults(props: {
       />
       <Pagination
         count={props.competitionData.course.Tracks.length}
-        fixedItems
+        fixedItems={true}
         page={activeHoleId()}
         itemComponent={(props) => (
           <PaginationItem
@@ -271,19 +271,19 @@ function EnterHoleResults(props: {
   const queryClient = useQueryClient();
   const updateScoresMutation = createMutation(() => ({
     mutationFn: async (
-      params: Parameters<typeof discGolfMetrixUpdateCompetitionScores2>[0]
+      params: Parameters<typeof discGolfMetrixUpdateCompetitionScores2>[0],
     ) => {
       const result = await discGolfMetrixUpdateCompetitionScores2(params);
       return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(
-        getCompetitionThrowsQueryOptions(props.competitionId)
+        getCompetitionThrowsQueryOptions(props.competitionId),
       );
     },
     onError: () => {
       queryClient.invalidateQueries(
-        getCompetitionThrowsQueryOptions(props.competitionId)
+        getCompetitionThrowsQueryOptions(props.competitionId),
       );
     },
   }));
@@ -291,10 +291,10 @@ function EnterHoleResults(props: {
   createEffect(() => {
     if (!updateScoresMutation.isError) return;
     showToast({
-      variant: "error",
-      title: "Failed to save scores",
+      variant: 'error',
+      title: 'Failed to save scores',
       description: `Failed saved scores: ${JSON.stringify(
-        updateScoresMutation.error
+        updateScoresMutation.error,
       )}`,
     });
   });
@@ -302,9 +302,9 @@ function EnterHoleResults(props: {
   createEffect(() => {
     if (!updateScoresMutation.isSuccess) return;
     showToast({
-      variant: "success",
-      title: "Saved scores",
-      description: "Successfully saved scores",
+      variant: 'success',
+      title: 'Saved scores',
+      description: 'Successfully saved scores',
       duration: 2000,
     });
   });
@@ -324,14 +324,14 @@ function EnterHoleResults(props: {
               const [dropdownOpen, setDropdownOpen] = createSignal(false);
 
               const throwsForHole = createMemo(() =>
-                props.store.getThrowsForHole(scorecard.ID, props.holeId)
+                props.store.getThrowsForHole(scorecard.ID, props.holeId),
               );
 
               const handleDropdownClick =
-                (landed: SingleThrow["landed"]) => () => {
+                (landed: SingleThrow['landed']) => () => {
                   const throwIds = throwsForHole()?.map((x) => x.throwId);
                   let lastThrowId = 0;
-                  if (!throwIds || throwIds.length < 1) lastThrowId = 0;
+                  if (!throwIds || throwIds.length === 0) lastThrowId = 0;
                   else lastThrowId = Math.max(...throwIds);
 
                   props.store.setThrow(scorecard.ID, props.holeId, {
@@ -342,7 +342,7 @@ function EnterHoleResults(props: {
 
               const scorecardForCurrentHole = createMemo(() => {
                 const resultInScorecards = scorecard.Results[props.holeId];
-                if ("Result" in resultInScorecards) return resultInScorecards;
+                if ('Result' in resultInScorecards) return resultInScorecards;
                 return undefined;
               });
 
@@ -350,12 +350,12 @@ function EnterHoleResults(props: {
                 const throws = throwsForHole();
                 const scoreFromThrows =
                   throws
-                    ?.map((x) => (x.landed === "Penalty" ? 2 : 1))
+                    ?.map((x) => (x.landed === 'Penalty' ? 2 : 1))
                     .reduce((acc, curr) => curr + acc, 0) ?? 0;
                 const resultScore =
                   scoreFromThrows > 0
                     ? scoreFromThrows
-                    : scorecardForCurrentHole()?.Result ?? 0;
+                    : (scorecardForCurrentHole()?.Result ?? 0);
                 return resultScore;
               });
 
@@ -370,14 +370,14 @@ function EnterHoleResults(props: {
                             src={
                               new URL(
                                 `/profile/${scorecard.Image}`,
-                                discGolfMetrixUrl
+                                discGolfMetrixUrl,
                               ).href
                             }
                           />
                           <AvatarFallback>
-                            {scorecard.Name.split(" ")
+                            {scorecard.Name.split(' ')
                               .map((x) => x[0])
-                              .join("")}
+                              .join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div>
@@ -393,19 +393,19 @@ function EnterHoleResults(props: {
                         <Button
                           classList={{
                             hidden: !(
-                              throwsForHole()?.at(-1)?.landed === "Basket"
+                              throwsForHole()?.at(-1)?.landed === 'Basket'
                             ),
                           }}
                           disabled={
                             updateScoresMutation.isPending ||
-                            (parseInt(
-                              scorecardForCurrentHole()?.Result ?? "0"
+                            (Number.parseInt(
+                              scorecardForCurrentHole()?.Result ?? '0',
                             ) === currentScore() &&
-                              parseInt(
-                                scorecardForCurrentHole()?.Penalty ?? "0"
+                              Number.parseInt(
+                                scorecardForCurrentHole()?.Penalty ?? '0',
                               ) ===
                                 throwsForHole()?.filter(
-                                  (t) => t.landed === "Penalty"
+                                  (t) => t.landed === 'Penalty',
                                 ).length)
                           }
                           onclick={() => {
@@ -414,11 +414,11 @@ function EnterHoleResults(props: {
 
                             const scoreFromThrows =
                               throws
-                                .map((x) => (x.landed === "Penalty" ? 2 : 1))
+                                .map((x) => (x.landed === 'Penalty' ? 2 : 1))
                                 .reduce((acc, curr) => curr + acc, 0) ?? 0;
 
                             const penalties = throws.filter(
-                              (t) => t.landed === "Penalty"
+                              (t) => t.landed === 'Penalty',
                             ).length;
 
                             updateScoresMutation.mutate([
@@ -436,14 +436,14 @@ function EnterHoleResults(props: {
                         <Button
                           onclick={() => {
                             const throwIds = throwsForHole()?.map(
-                              (x) => x.throwId
+                              (x) => x.throwId,
                             );
-                            if (!throwIds || throwIds.length < 1) return;
+                            if (!throwIds || throwIds.length === 0) return;
                             const lastThrowId = Math.max(...throwIds);
                             props.store.removeThrow(
                               scorecard.ID,
                               props.holeId,
-                              lastThrowId
+                              lastThrowId,
                             );
                           }}
                           disabled={(throwsForHole() ?? []).length === 0}
@@ -456,46 +456,46 @@ function EnterHoleResults(props: {
                           onOpenChange={(isOpen) => setDropdownOpen(isOpen)}
                         >
                           <DropdownMenuTrigger
-                            as={Button<"button">}
+                            as={Button<'button'>}
                             disabled={
-                              throwsForHole()?.at(-1)?.landed === "Basket"
+                              throwsForHole()?.at(-1)?.landed === 'Basket'
                             }
                           >
                             +
                           </DropdownMenuTrigger>
                           <DropdownMenuContent class="w-48">
                             <DropdownMenuItem
-                              onclick={handleDropdownClick("Basket")}
+                              onclick={handleDropdownClick('Basket')}
                             >
                               <span>In Basket</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onclick={handleDropdownClick("Circle0 0-3m")}
+                              onclick={handleDropdownClick('Circle0 0-3m')}
                             >
                               <span>Circle0 0-3m</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onclick={handleDropdownClick("Circle1 0-10m")}
+                              onclick={handleDropdownClick('Circle1 0-10m')}
                             >
                               <span>Circle1 0-10m</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onclick={handleDropdownClick("Circle2 10-20m")}
+                              onclick={handleDropdownClick('Circle2 10-20m')}
                             >
                               <span>Circle1 10-20m</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onclick={handleDropdownClick("Fairway")}
+                              onclick={handleDropdownClick('Fairway')}
                             >
                               <span>Fairway</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onclick={handleDropdownClick("Off fairway")}
+                              onclick={handleDropdownClick('Off fairway')}
                             >
                               <span>Off fairway</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onclick={handleDropdownClick("Penalty")}
+                              onclick={handleDropdownClick('Penalty')}
                             >
                               <span>OB/Penalty</span>
                             </DropdownMenuItem>

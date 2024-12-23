@@ -1,9 +1,10 @@
-import { MyHistory } from "~/components/myHistory";
+import { MyHistory } from '~/components/myHistory';
 
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(() => resolve(undefined), ms));
 }
 
+// biome-ignore lint/style/noDefaultExport: Required for route
 export default function Home() {
   return (
     <main class="text-center mx-auto p-4">

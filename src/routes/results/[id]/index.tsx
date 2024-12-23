@@ -1,30 +1,30 @@
-import { A, useParams, useSearchParams } from "@solidjs/router";
-import { createQuery } from "@tanstack/solid-query";
+import { A, useParams, useSearchParams } from '@solidjs/router';
+import { createQuery } from '@tanstack/solid-query';
 import {
   createColumnHelper,
   createSolidTable,
   flexRender,
   getCoreRowModel,
-} from "@tanstack/solid-table";
-import { Accessor, createMemo, For, Show } from "solid-js";
-import { type discGolfMetrixGetCompetitionThrows } from "~/apiWrapper/getCompetitionThrows";
-import { getCompetitionThrowsQueryOptions } from "~/components/mapbox/query/query";
-import { PlayerAvatar, PlayerAvatarFromName } from "~/components/playerAvatar";
-import { QueryBoundary } from "~/components/queryBoundary";
+} from '@tanstack/solid-table';
+import { type Accessor, For, Show, createMemo } from 'solid-js';
+import type { discGolfMetrixGetCompetitionThrows } from '~/apiWrapper/getCompetitionThrows';
+import { getCompetitionThrowsQueryOptions } from '~/components/mapbox/query/query';
+import { PlayerAvatar, PlayerAvatarFromName } from '~/components/playerAvatar';
+import { QueryBoundary } from '~/components/queryBoundary';
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
   BreadcrumbSeparator,
-} from "~/components/ui/breadcrumb";
+} from '~/components/ui/breadcrumb';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "~/components/ui/select";
+} from '~/components/ui/select';
 import {
   Table,
   TableBody,
@@ -32,7 +32,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
+} from '~/components/ui/table';
 
 function useCompetitionScoresQuery(competitionId: Accessor<string>) {
   return createQuery(() => getCompetitionThrowsQueryOptions(competitionId()));
@@ -45,6 +45,7 @@ type TableColumns = {
   total: number;
 };
 
+// biome-ignore lint/style/noDefaultExport: Routes must export default
 export default function TodoLoaderPage() {
   const params = useParams<{ id: string }>();
   const resultsQuery = useCompetitionScoresQuery(() => params.id);
@@ -74,8 +75,8 @@ function ResultsPage(props: {
   const columnHelper = createColumnHelper<TableColumns>();
 
   const columns = createMemo(() => [
-    columnHelper.accessor("player", {
-      header: "Name",
+    columnHelper.accessor('player', {
+      header: 'Name',
       cell: (ctx) => {
         return (
           <div class="flex items-center space-x-3">
@@ -101,29 +102,29 @@ function ResultsPage(props: {
       },
     }),
     columnHelper.group({
-      header: "Holes",
+      header: 'Holes',
       columns: [
         ...(
           props.results.course.Tracks.map((x) => ({
             id: x.Name,
             par: x.Par,
           })) ?? []
-        ).map(({ id, par }, index) =>
-          columnHelper.accessor("scores", {
+        ).map(({ id }, index) =>
+          columnHelper.accessor('scores', {
             header: `${id}`,
             cell: (ctx) => {
               return <>{ctx.getValue()[index]}</>;
             },
-          })
+          }),
         ),
-        columnHelper.accessor("total", {
-          header: "total",
+        columnHelper.accessor('total', {
+          header: 'total',
           cell: (ctx) => {
             return <>{ctx.getValue()}</>;
           },
         }),
-        columnHelper.accessor("diff", {
-          header: "+-",
+        columnHelper.accessor('diff', {
+          header: '+-',
           cell: (ctx) => {
             return <>{ctx.getValue()}</>;
           },
@@ -133,7 +134,7 @@ function ResultsPage(props: {
   ]);
 
   const groupIds = createMemo(
-    () => new Set(props.results.scorecards.map((s) => s.GroupName))
+    () => new Set(props.results.scorecards.map((s) => s.GroupName)),
   );
 
   const tableData = createMemo(
@@ -150,32 +151,34 @@ function ResultsPage(props: {
                 const diff = Object.values(player.Results).reduce(
                   (prev: number, curr) => {
                     if (curr === undefined) return prev;
-                    if ("Diff" in curr) {
-                      const holeDiff = parseInt(curr.Diff);
+                    if ('Diff' in curr) {
+                      const holeDiff = Number.parseInt(curr.Diff);
                       return prev + holeDiff;
                     }
                     return prev;
                   },
-                  0
+                  0,
                 );
-                return `${diff >= 0 ? "+" : "-"}${Math.abs(diff)}`;
+                return `${diff >= 0 ? '+' : '-'}${Math.abs(diff)}`;
               },
               player: {
-                id: parseInt(player.UserID),
+                id: Number.parseInt(player.UserID),
                 name: player.Name,
               },
               scores: Object.values(player.Results).map((x) =>
-                "Result" in x ? parseInt(x.Result) : undefined
+                'Result' in x ? Number.parseInt(x.Result) : undefined,
               ),
               total: Object.values(player.Results)
-                .map((x) => ("Result" in x ? parseInt(x.Result) : undefined))
+                .map((x) =>
+                  'Result' in x ? Number.parseInt(x.Result) : undefined,
+                )
                 .reduce(
                   (prev: number, curr: number | undefined) =>
                     prev + (curr ?? 0),
-                  0
+                  0,
                 ),
-            } satisfies TableColumns)
-        ) ?? []
+            }) satisfies TableColumns,
+        ) ?? [],
   );
 
   const table = createSolidTable({
@@ -207,7 +210,7 @@ function ResultsPage(props: {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink current>Breadcrumb</BreadcrumbLink>
+                <BreadcrumbLink current={true}>Breadcrumb</BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -216,10 +219,10 @@ function ResultsPage(props: {
         <Select
           value={searchParams.groupId}
           onChange={(value) => {
-            if (value === "All") return setSearchParams({ groupId: undefined });
+            if (value === 'All') return setSearchParams({ groupId: undefined });
             setSearchParams({ groupId: value });
           }}
-          options={["All", ...groupIds()]}
+          options={['All', ...groupIds()]}
           placeholder="Select a group…"
           itemComponent={(props) => (
             <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
@@ -244,7 +247,7 @@ function ResultsPage(props: {
                           <Show when={!header.isPlaceholder}>
                             {flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                           </Show>
                         </TableHead>
@@ -276,7 +279,7 @@ function ResultsPage(props: {
                           <TableCell>
                             {flexRender(
                               cell.column.columnDef.cell,
-                              cell.getContext()
+                              cell.getContext(),
                             )}
                           </TableCell>
                         )}

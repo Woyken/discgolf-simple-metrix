@@ -1,62 +1,79 @@
-import type { JSX, ValidComponent } from "solid-js"
-import { splitProps } from "solid-js"
+import type { JSX, ValidComponent } from 'solid-js';
+import { splitProps } from 'solid-js';
 
-import * as PaginationPrimitive from "@kobalte/core/pagination"
-import type { PolymorphicProps } from "@kobalte/core/polymorphic"
+import {
+  Ellipsis as PaginationPrimitiveEllipsis,
+  Item as PaginationPrimitiveItem,
+  Items as PaginationPrimitiveItems,
+  Next as PaginationPrimitiveNext,
+  type PaginationEllipsisProps as PaginationPrimitivePaginationEllipsisProps,
+  type PaginationItemProps as PaginationPrimitivePaginationItemProps,
+  type PaginationNextProps as PaginationPrimitivePaginationNextProps,
+  type PaginationPreviousProps as PaginationPrimitivePaginationPreviousProps,
+  type PaginationRootProps as PaginationPrimitivePaginationRootProps,
+  Previous as PaginationPrimitivePrevious,
+  Root as PaginationPrimitiveRoot,
+} from '@kobalte/core/pagination';
+import type { PolymorphicProps } from '@kobalte/core/polymorphic';
 
-import { cn } from "~/lib/utils"
-import { buttonVariants } from "~/components/ui/button"
+import { buttonVariants } from '~/components/ui/button';
+import { cn } from '~/lib/utils';
 
-const PaginationItems = PaginationPrimitive.Items
+const PaginationItems = PaginationPrimitiveItems;
 
-type PaginationRootProps<T extends ValidComponent = "nav"> =
-  PaginationPrimitive.PaginationRootProps<T> & { class?: string | undefined }
+type PaginationRootProps<T extends ValidComponent = 'nav'> =
+  PaginationPrimitivePaginationRootProps<T> & { class?: string | undefined };
 
-const Pagination = <T extends ValidComponent = "nav">(
-  props: PolymorphicProps<T, PaginationRootProps<T>>
+const Pagination = <T extends ValidComponent = 'nav'>(
+  props: PolymorphicProps<T, PaginationRootProps<T>>,
 ) => {
-  const [local, others] = splitProps(props as PaginationRootProps, ["class"])
+  const [local, others] = splitProps(props as PaginationRootProps, ['class']);
   return (
-    <PaginationPrimitive.Root
-      class={cn("[&>*]:flex [&>*]:flex-row [&>*]:items-center [&>*]:gap-1", local.class)}
-      {...others}
-    />
-  )
-}
-
-type PaginationItemProps<T extends ValidComponent = "button"> =
-  PaginationPrimitive.PaginationItemProps<T> & { class?: string | undefined }
-
-const PaginationItem = <T extends ValidComponent = "button">(
-  props: PolymorphicProps<T, PaginationItemProps<T>>
-) => {
-  const [local, others] = splitProps(props as PaginationItemProps, ["class"])
-  return (
-    <PaginationPrimitive.Item
+    <PaginationPrimitiveRoot
       class={cn(
-        buttonVariants({
-          variant: "ghost"
-        }),
-        "size-10 data-[current]:border",
-        local.class
+        '[&>*]:flex [&>*]:flex-row [&>*]:items-center [&>*]:gap-1',
+        local.class,
       )}
       {...others}
     />
-  )
-}
+  );
+};
 
-type PaginationEllipsisProps<T extends ValidComponent = "div"> =
-  PaginationPrimitive.PaginationEllipsisProps<T> & {
-    class?: string | undefined
-  }
+type PaginationItemProps<T extends ValidComponent = 'button'> =
+  PaginationPrimitivePaginationItemProps<T> & { class?: string | undefined };
 
-const PaginationEllipsis = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, PaginationEllipsisProps<T>>
+const PaginationItem = <T extends ValidComponent = 'button'>(
+  props: PolymorphicProps<T, PaginationItemProps<T>>,
 ) => {
-  const [local, others] = splitProps(props as PaginationEllipsisProps, ["class"])
+  const [local, others] = splitProps(props as PaginationItemProps, ['class']);
   return (
-    <PaginationPrimitive.Ellipsis
-      class={cn("flex size-10 items-center justify-center", local.class)}
+    <PaginationPrimitiveItem
+      class={cn(
+        buttonVariants({
+          variant: 'ghost',
+        }),
+        'size-10 data-[current]:border',
+        local.class,
+      )}
+      {...others}
+    />
+  );
+};
+
+type PaginationEllipsisProps<T extends ValidComponent = 'div'> =
+  PaginationPrimitivePaginationEllipsisProps<T> & {
+    class?: string | undefined;
+  };
+
+const PaginationEllipsis = <T extends ValidComponent = 'div'>(
+  props: PolymorphicProps<T, PaginationEllipsisProps<T>>,
+) => {
+  const [local, others] = splitProps(props as PaginationEllipsisProps, [
+    'class',
+  ]);
+  return (
+    <PaginationPrimitiveEllipsis
+      class={cn('flex size-10 items-center justify-center', local.class)}
       {...others}
     >
       <svg
@@ -69,33 +86,37 @@ const PaginationEllipsis = <T extends ValidComponent = "div">(
         stroke-linejoin="round"
         class="size-4"
       >
+        <title>Pagination ellipsis</title>
         <circle cx="12" cy="12" r="1" />
         <circle cx="19" cy="12" r="1" />
         <circle cx="5" cy="12" r="1" />
       </svg>
       <span class="sr-only">More pages</span>
-    </PaginationPrimitive.Ellipsis>
-  )
-}
+    </PaginationPrimitiveEllipsis>
+  );
+};
 
-type PaginationPreviousProps<T extends ValidComponent = "button"> =
-  PaginationPrimitive.PaginationPreviousProps<T> & {
-    class?: string | undefined
-    children?: JSX.Element
-  }
+type PaginationPreviousProps<T extends ValidComponent = 'button'> =
+  PaginationPrimitivePaginationPreviousProps<T> & {
+    class?: string | undefined;
+    children?: JSX.Element;
+  };
 
-const PaginationPrevious = <T extends ValidComponent = "button">(
-  props: PolymorphicProps<T, PaginationPreviousProps<T>>
+const PaginationPrevious = <T extends ValidComponent = 'button'>(
+  props: PolymorphicProps<T, PaginationPreviousProps<T>>,
 ) => {
-  const [local, others] = splitProps(props as PaginationPreviousProps, ["class", "children"])
+  const [local, others] = splitProps(props as PaginationPreviousProps, [
+    'class',
+    'children',
+  ]);
   return (
-    <PaginationPrimitive.Previous
+    <PaginationPrimitivePrevious
       class={cn(
         buttonVariants({
-          variant: "ghost"
+          variant: 'ghost',
         }),
-        "gap-1 pl-2.5",
-        local.class
+        'gap-1 pl-2.5',
+        local.class,
       )}
       {...others}
     >
@@ -111,33 +132,37 @@ const PaginationPrevious = <T extends ValidComponent = "button">(
             stroke-linejoin="round"
             class="size-4"
           >
+            <title>Pagination previous</title>
             <path d="M15 6l-6 6l6 6" />
           </svg>
           <span>Previous</span>
         </>
       )}
-    </PaginationPrimitive.Previous>
-  )
-}
+    </PaginationPrimitivePrevious>
+  );
+};
 
-type PaginationNextProps<T extends ValidComponent = "button"> =
-  PaginationPrimitive.PaginationNextProps<T> & {
-    class?: string | undefined
-    children?: JSX.Element
-  }
+type PaginationNextProps<T extends ValidComponent = 'button'> =
+  PaginationPrimitivePaginationNextProps<T> & {
+    class?: string | undefined;
+    children?: JSX.Element;
+  };
 
-const PaginationNext = <T extends ValidComponent = "button">(
-  props: PolymorphicProps<T, PaginationNextProps<T>>
+const PaginationNext = <T extends ValidComponent = 'button'>(
+  props: PolymorphicProps<T, PaginationNextProps<T>>,
 ) => {
-  const [local, others] = splitProps(props as PaginationNextProps, ["class", "children"])
+  const [local, others] = splitProps(props as PaginationNextProps, [
+    'class',
+    'children',
+  ]);
   return (
-    <PaginationPrimitive.Next
+    <PaginationPrimitiveNext
       class={cn(
         buttonVariants({
-          variant: "ghost"
+          variant: 'ghost',
         }),
-        "gap-1 pl-2.5",
-        local.class
+        'gap-1 pl-2.5',
+        local.class,
       )}
       {...others}
     >
@@ -154,13 +179,14 @@ const PaginationNext = <T extends ValidComponent = "button">(
             stroke-linejoin="round"
             class="size-4"
           >
+            <title>Pagination next</title>
             <path d="M9 6l6 6l-6 6" />
           </svg>
         </>
       )}
-    </PaginationPrimitive.Next>
-  )
-}
+    </PaginationPrimitiveNext>
+  );
+};
 
 export {
   Pagination,
@@ -168,5 +194,5 @@ export {
   PaginationItem,
   PaginationEllipsis,
   PaginationPrevious,
-  PaginationNext
-}
+  PaginationNext,
+};

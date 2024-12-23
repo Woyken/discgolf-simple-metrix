@@ -1,8 +1,8 @@
-import { getCookie } from "vinxi/http";
-import { getDomParser } from "./domParser";
-import { query, redirect } from "@solidjs/router";
-import { number, parse } from "valibot";
-import { discGolfMetrixUrl } from "./urlBase";
+import { query, redirect } from '@solidjs/router';
+import { number, parse } from 'valibot';
+import { getCookie } from 'vinxi/http';
+import { getDomParser } from './domParser.ts';
+import { discGolfMetrixUrl } from './urlBase.ts';
 
 // TODO Faster endpoint to find player and it's avatar image:
 // https://discgolfmetrix.com/?u=player_stat&value=karolis%20uz
@@ -10,31 +10,31 @@ import { discGolfMetrixUrl } from "./urlBase";
 // https://discgolfmetrix.com/find_user_server.php?value=karolis%20uz
 
 export const discGolfMetrixGetPlayer = query(async (playerIdMaybe: number) => {
-  "use server";
+  'use server';
   const playerId = parse(number(), playerIdMaybe);
-  const token = getCookie("token");
-  if (!token) throw redirect("/login");
+  const token = getCookie('token');
+  if (!token) throw redirect('/login');
 
   const response = await fetch(
     new URL(`/player/${playerId}`, discGolfMetrixUrl),
     {
       headers: {
-        Cookie: token,
+        cookie: token,
       },
-    }
+    },
   );
-  if (!response.ok) throw new Error("Request failed");
+  if (!response.ok) throw new Error('Request failed');
 
   const text = await response.text();
-  const DOMParser = await getDomParser();
-  const parser = new DOMParser();
-  const parsedHtml = parser.parseFromString(text, "text/html");
-  const profilePictureEl = parsedHtml.querySelector("div.profile-face");
-  if (!profilePictureEl) throw new Error("missing profile picture element");
+  const domParser = await getDomParser();
+  const parser = new domParser();
+  const parsedHtml = parser.parseFromString(text, 'text/html');
+  const profilePictureEl = parsedHtml.querySelector('div.profile-face');
+  if (!profilePictureEl) throw new Error('missing profile picture element');
   const playerName = parsedHtml.querySelector(
-    "div.profile-name h1"
+    'div.profile-name h1',
   )?.textContent;
-  if (!playerName) throw new Error("missing profile name");
+  if (!playerName) throw new Error('missing profile name');
 
   const profilePictureUrl = getProfilePictureUrl(profilePictureEl);
 
@@ -42,15 +42,15 @@ export const discGolfMetrixGetPlayer = query(async (playerIdMaybe: number) => {
     profilePictureUrl,
     playerName,
   };
-}, "getPlayer");
+}, 'getPlayer');
 function getProfilePictureUrl(profilePictureEl: Element) {
   if (
-    !!profilePictureEl?.classList.contains("no-face") ||
-    !profilePictureEl?.getAttribute("style")
+    !!profilePictureEl?.classList.contains('no-face') ||
+    !profilePictureEl?.getAttribute('style')
   )
     return undefined;
 
-  const urlStr = profilePictureEl.getAttribute("style")?.split("'")[1];
+  const urlStr = profilePictureEl.getAttribute('style')?.split("'")[1];
   if (!urlStr) return undefined;
   return new URL(urlStr, discGolfMetrixUrl);
 }
