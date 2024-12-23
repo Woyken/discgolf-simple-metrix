@@ -8,7 +8,7 @@ export default defineConfig({
       VitePWA({
         registerType: 'prompt',
         workbox: {
-          globPatterns: ['**/*'],
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
         },
         includeAssets: ['**/*'],
         manifest: {
