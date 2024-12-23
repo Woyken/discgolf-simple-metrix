@@ -17,30 +17,30 @@ import {
 import type { CompetitionThrowsResponse } from '~/apiWrapper/getCompetitionThrows';
 import { discGolfMetrixUpdateCompetitionScores2 } from '~/apiWrapper/updateCompetitionScores';
 import { discGolfMetrixUrl } from '~/apiWrapper/urlBase';
-import { getCompetitionThrowsQueryOptions } from '../mapbox/query/query.ts';
-import { QueryBoundary } from '../queryBoundary_renameme.tsx';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar_renameme.tsx';
-import { Button } from '../ui/button_renameme.tsx';
+import { QueryBoundaryQueryBoundary.tsx
+import { getCompetitionThrowsQueryOptionsnThrowsQuerymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.tsrymapbox/query/query.ts./mapbox/query/query.ts';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar.tsx';
+import { Button } from '../ui/Button.tsx';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu_renameme.tsx';
+} from '../ui/Dropdown-menu.tsx';
 import {
   Pagination,
   PaginationEllipsis,
   PaginationItem,
   PaginationItems,
-} from '../ui/pagination_renameme.tsx';
+} from '../ui/Pagination.tsx';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select_renameme.tsx';
-import { showToast } from '../ui/toast_renameme.tsx';
+} from '../ui/Select.tsx';
+import { showToast } from '../ui/Toast.tsx';
 
 const idbStore = createIdbStore('w-db', 'competition-throws');
 

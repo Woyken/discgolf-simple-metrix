@@ -5,7 +5,7 @@ import {
   createResource,
   useContext,
 } from 'solid-js';
-import { useGoogleMapsLoader } from './loaderProvider_renameme.tsx';
+import { useGoogleMapsLoader } from './LoaderProvider.tsx';
 
 const ctx = createContext<{
   mapsLibrary: NonNullable<

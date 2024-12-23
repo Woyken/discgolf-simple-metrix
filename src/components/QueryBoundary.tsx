@@ -2,7 +2,7 @@ import type { CreateQueryResult } from '@tanstack/solid-query';
 import type { JSX } from 'solid-js';
 import { ErrorBoundary, Match, Suspense, Switch } from 'solid-js';
 import { getLogger } from '~/lib/logger.ts';
-import { Button } from './ui/button_renameme.tsx';
+import { Button } from './ui/Button.tsx';
 
 export interface QueryBoundaryProps<T = unknown> {
   query: CreateQueryResult<T, Error | unknown>;
