@@ -1,7 +1,7 @@
 import { createQuery } from '@tanstack/solid-query';
 import { type Accessor, Suspense, createMemo } from 'solid-js';
 import { discGolfMetrixGetPlayer } from '~/apiWrapper/player';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/Avatar.tsx';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar_renameme.tsx';
 
 function usePlayerQuery(id: Accessor<number>) {
   return createQuery(() => ({
