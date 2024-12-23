@@ -7,6 +7,9 @@ export default defineConfig({
     plugins: [
       VitePWA({
         registerType: 'prompt',
+        workbox: {
+          globPatterns: ['**/*', '**/!(node_modules)/**/*'],
+        },
         includeAssets: ['**/*'],
         manifest: {
           // biome-ignore lint/style/useNamingConvention: API
