@@ -1,7 +1,7 @@
 import { redirect } from '@solidjs/router';
 import { getCookie } from 'vinxi/http';
-import { getDomParser } from './domParser.ts';
-import { discGolfMetrixUrl } from './urlBase.ts';
+import { getDomParser } from './domParser';
+import { discGolfMetrixUrl } from './urlBase';
 
 // https://discgolfmetrix.com/score3_savechanges.php?changes=12278261,5,3,0,,,,,0
 //                                                           /\ player in competition id

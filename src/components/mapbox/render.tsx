@@ -3,11 +3,11 @@ import { createQuery } from '@tanstack/solid-query';
 import { Map as MapboxMap } from 'mapbox-gl';
 import { onCleanup } from 'solid-js';
 import type { CompetitionThrowsResponse } from '~/apiWrapper/getCompetitionThrows';
-import { QueryBoundary } from '../queryBoundary.ts';
+import { QueryBoundary } from '../queryBoundary';
 import {
   getCompetitionThrowsQueryOptions,
   getMapboxAccessTokenQueryOptions,
-} from './query/query.ts';
+} from './query/query';
 
 export function RenderAndQuery(props: { competitionId: string }) {
   const accessTokenQuery = createQuery(() =>

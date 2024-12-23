@@ -1,5 +1,5 @@
 import { type SessionConfig, setCookie, updateSession } from 'vinxi/http';
-import { discGolfMetrixUrl } from './urlBase.ts';
+import { discGolfMetrixUrl } from './urlBase';
 
 type Session = {
   token: string;

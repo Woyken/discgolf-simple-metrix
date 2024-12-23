@@ -1,8 +1,8 @@
 // https://discgolfmetrix.com/?=&ID=3177876
 import { query, redirect } from '@solidjs/router';
 import { getCookie } from 'vinxi/http';
-import { getDomParser } from './domParser.ts';
-import { discGolfMetrixUrl } from './urlBase.ts';
+import { getDomParser } from './domParser';
+import { discGolfMetrixUrl } from './urlBase';
 
 function dropUntil<T>(iter: Iterable<T>, until: (i: T) => boolean) {
   return {

@@ -1,6 +1,6 @@
 import { query } from '@solidjs/router';
-import { getDomParser } from './domParser.ts';
-import { discGolfMetrixUrl } from './urlBase.ts';
+import { getDomParser } from './domParser';
+import { discGolfMetrixUrl } from './urlBase';
 
 export const discGolfMetrixGetGoogleMapsKey = query(
   async (courseId: string) => {

@@ -10,9 +10,9 @@ import {
   untrack,
 } from 'solid-js';
 import { Button } from '../ui/button.tsx';
-import { createGeolocation } from './createGeolocationWatcher.ts';
-import { useGoogleMapsMapsLibrary } from './mapsLibraryProvider.ts';
-import { getCourseMapDataQueryOptions } from './query/query.ts';
+import { createGeolocation } from './createGeolocationWatcher';
+import { useGoogleMapsMapsLibrary } from './mapsLibraryProvider';
+import { getCourseMapDataQueryOptions } from './query/query';
 
 // biome-ignore lint/correctness/noUndeclaredVariables: google maps define global variables :(
 import googlemaps = google.maps;

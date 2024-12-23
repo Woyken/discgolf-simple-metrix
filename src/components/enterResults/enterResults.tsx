@@ -17,30 +17,30 @@ import {
 import type { CompetitionThrowsResponse } from '~/apiWrapper/getCompetitionThrows';
 import { discGolfMetrixUpdateCompetitionScores2 } from '~/apiWrapper/updateCompetitionScores';
 import { discGolfMetrixUrl } from '~/apiWrapper/urlBase';
-import { getCompetitionThrowsQueryOptions } from '../mapbox/query/query.ts';
-import { QueryBoundary } from '../queryBoundary.ts';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.ts';
+import { getCompetitionThrowsQueryOptions } from '../mapbox/query/query';
+import { QueryBoundary } from '../queryBoundary';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button.tsx';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu.ts';
+} from '../ui/dropdown-menu';
 import {
   Pagination,
   PaginationEllipsis,
   PaginationItem,
   PaginationItems,
-} from '../ui/pagination.ts';
+} from '../ui/pagination';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select.ts';
-import { showToast } from '../ui/toast.ts';
+} from '../ui/select';
+import { showToast } from '../ui/toast';
 
 const idbStore = createIdbStore('w-db', 'competition-throws');
 

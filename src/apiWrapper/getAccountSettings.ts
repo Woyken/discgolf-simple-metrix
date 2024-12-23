@@ -1,7 +1,7 @@
 import { query, redirect } from '@solidjs/router';
 import { getCookie } from 'vinxi/http';
-import { getDomParser } from './domParser.ts';
-import { discGolfMetrixUrl } from './urlBase.ts';
+import { getDomParser } from './domParser';
+import { discGolfMetrixUrl } from './urlBase';
 
 export const discGolfMetrixGetAccountSettings = query(async () => {
   'use server';

@@ -2,9 +2,9 @@ import { useRegisterSw } from 'virtual:pwa-register/solid';
 import { toaster } from '@kobalte/core/toast';
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
-import { getLogger } from '~/lib/logger.ts';
+import { getLogger } from '~/lib/logger';
 import { Button } from './ui/button.tsx';
-import { Toast } from './ui/toast.ts';
+import { Toast } from './ui/toast';
 
 export const ReloadPrompt: Component = () => {
   const {

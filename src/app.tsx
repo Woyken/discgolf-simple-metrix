@@ -11,12 +11,12 @@ import { Suspense } from 'solid-js';
 import { isServer } from 'solid-js/web';
 import { getCookie } from 'vinxi/http';
 import { NavHandleLogin } from './components/nav.tsx';
-import { Toaster } from './components/ui/toast.ts';
+import { Toaster } from './components/ui/toast';
 
 import './app.css';
 
 const ReloadPrompt = clientOnly(() =>
-  import('./components/reloadPrompt.ts').then((x) => ({
+  import('./components/reloadPrompt').then((x) => ({
     default: x.ReloadPrompt,
   })),
 );

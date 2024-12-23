@@ -10,7 +10,7 @@ import {
 import { For, Suspense, createMemo } from 'solid-js';
 import { discGolfMetrixGetCompetitionsList } from '~/apiWrapper/listCompetitions';
 import { Button } from './ui/button.tsx';
-import { Skeleton } from './ui/skeleton.ts';
+import { Skeleton } from './ui/skeleton';
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './ui/table.ts';
+} from './ui/table';
 
 export function MyHistory() {
   return (

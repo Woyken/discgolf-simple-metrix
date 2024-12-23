@@ -1,5 +1,5 @@
 import { query } from '@solidjs/router';
-import { discGolfMetrixUrl } from './urlBase.ts';
+import { discGolfMetrixUrl } from './urlBase';
 
 type MapJsonResponse = {
   // biome-ignore lint/style/useNamingConvention: Typed API

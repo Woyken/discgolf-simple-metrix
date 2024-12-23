@@ -1,8 +1,8 @@
 import { query, redirect } from '@solidjs/router';
 import { number, parse } from 'valibot';
 import { getCookie } from 'vinxi/http';
-import { getDomParser } from './domParser.ts';
-import { discGolfMetrixUrl } from './urlBase.ts';
+import { getDomParser } from './domParser';
+import { discGolfMetrixUrl } from './urlBase';
 
 // TODO Faster endpoint to find player and it's avatar image:
 // https://discgolfmetrix.com/?u=player_stat&value=karolis%20uz
