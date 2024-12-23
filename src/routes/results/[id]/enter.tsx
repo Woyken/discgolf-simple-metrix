@@ -2,7 +2,7 @@ import { useParams } from '@solidjs/router';
 import { clientOnly } from '@solidjs/start';
 
 const EnterCompetitionResultsWithQuery = clientOnly(() =>
-  import('~/components/enterResults/enterResults_renameme').then((x) => ({
+  import('~/components/enterResults/enterResults').then((x) => ({
     default: x.EnterCompetitionResultsWithQuery,
   })),
 );

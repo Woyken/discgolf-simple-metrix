@@ -8,13 +8,13 @@ import {
 import { useNavigate } from '@solidjs/router';
 import { createMutation } from '@tanstack/solid-query';
 import { discGolfMetrixLogin } from '~/apiWrapper/login';
-import { Button } from '~/components/ui/button_renameme';
-import { Grid } from '~/components/ui/grid_renameme';
+import { Button } from '~/components/ui/button';
+import { Grid } from '~/components/ui/grid';
 import {
   TextField,
   TextFieldInput,
   TextFieldLabel,
-} from '~/components/ui/text-field_renameme';
+} from '~/components/ui/text-field';
 
 function useLoginMutation() {
   return createMutation(() => ({

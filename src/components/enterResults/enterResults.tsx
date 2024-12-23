@@ -18,29 +18,29 @@ import type { CompetitionThrowsResponse } from '~/apiWrapper/getCompetitionThrow
 import { discGolfMetrixUpdateCompetitionScores2 } from '~/apiWrapper/updateCompetitionScores';
 import { discGolfMetrixUrl } from '~/apiWrapper/urlBase';
 import { getCompetitionThrowsQueryOptions } from '../mapbox/query/query.ts';
-import { QueryBoundary } from '../queryBoundary_renameme.tsx';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar_renameme.tsx';
-import { Button } from '../ui/button_renameme.tsx';
+import { QueryBoundary } from '../queryBoundary.ts';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.ts';
+import { Button } from '../ui/button.tsx';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu_renameme.tsx';
+} from '../ui/dropdown-menu.ts';
 import {
   Pagination,
   PaginationEllipsis,
   PaginationItem,
   PaginationItems,
-} from '../ui/pagination_renameme.tsx';
+} from '../ui/pagination.ts';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select_renameme.tsx';
-import { showToast } from '../ui/toast_renameme.tsx';
+} from '../ui/select.ts';
+import { showToast } from '../ui/toast.ts';
 
 const idbStore = createIdbStore('w-db', 'competition-throws');
 

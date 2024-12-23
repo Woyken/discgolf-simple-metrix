@@ -16,7 +16,7 @@ import {
 } from '@kobalte/core/pagination';
 import type { PolymorphicProps } from '@kobalte/core/polymorphic';
 
-import { buttonVariants } from '~/components/ui/button_renameme';
+import { buttonVariants } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 
 const PaginationItems = PaginationPrimitiveItems;

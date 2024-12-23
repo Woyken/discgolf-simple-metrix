@@ -2,8 +2,8 @@ import { A, useLocation } from '@solidjs/router';
 import { createQuery } from '@tanstack/solid-query';
 import { Show, Suspense, createMemo } from 'solid-js';
 import { discGolfMetrixGetAccountSettings } from '~/apiWrapper/getAccountSettings';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar_renameme.tsx';
-import { Button } from './ui/button_renameme.tsx';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.ts';
+import { Button } from './ui/button.tsx';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu_renameme.tsx';
+} from './ui/dropdown-menu.ts';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -21,7 +21,7 @@ import {
   NavigationMenuLabel,
   NavigationMenuLink,
   NavigationMenuTrigger,
-} from './ui/navigation-menu_renameme.tsx';
+} from './ui/navigation-menu.ts';
 
 const useSettingsQuery = () => {
   return createQuery(() => ({
