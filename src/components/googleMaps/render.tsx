@@ -1,4 +1,4 @@
-/// <reference types="googlemaps" />
+/// <reference types="google.maps" />
 import { createQuery } from '@tanstack/solid-query';
 import {
   type Accessor,
@@ -9,7 +9,7 @@ import {
   onCleanup,
   untrack,
 } from 'solid-js';
-import { Button } from '../ui/button.ts';
+import { Button } from '../ui/button.tsx';
 import { createGeolocation } from './createGeolocationWatcher.ts';
 import { useGoogleMapsMapsLibrary } from './mapsLibraryProvider.ts';
 import { getCourseMapDataQueryOptions } from './query/query.ts';

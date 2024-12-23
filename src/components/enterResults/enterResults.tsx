@@ -20,7 +20,7 @@ import { discGolfMetrixUrl } from '~/apiWrapper/urlBase';
 import { getCompetitionThrowsQueryOptions } from '../mapbox/query/query.ts';
 import { QueryBoundary } from '../queryBoundary.ts';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.ts';
-import { Button } from '../ui/button.ts';
+import { Button } from '../ui/button.tsx';
 import {
   DropdownMenu,
   DropdownMenuContent,

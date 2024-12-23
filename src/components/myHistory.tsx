@@ -9,7 +9,7 @@ import {
 } from '@tanstack/solid-table';
 import { For, Suspense, createMemo } from 'solid-js';
 import { discGolfMetrixGetCompetitionsList } from '~/apiWrapper/listCompetitions';
-import { Button } from './ui/button.ts';
+import { Button } from './ui/button.tsx';
 import { Skeleton } from './ui/skeleton.ts';
 import {
   Table,

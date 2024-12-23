@@ -3,7 +3,7 @@ import { createQuery } from '@tanstack/solid-query';
 import { Show, Suspense, createMemo } from 'solid-js';
 import { discGolfMetrixGetAccountSettings } from '~/apiWrapper/getAccountSettings';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar.ts';
-import { Button } from './ui/button.ts';
+import { Button } from './ui/button.tsx';
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -3,7 +3,7 @@ import { toaster } from '@kobalte/core/toast';
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
 import { getLogger } from '~/lib/logger.ts';
-import { Button } from './ui/button.ts';
+import { Button } from './ui/button.tsx';
 import { Toast } from './ui/toast.ts';
 
 export const ReloadPrompt: Component = () => {
