@@ -4,6 +4,7 @@ import {
   cookieStorageManagerSSR,
 } from '@kobalte/core';
 import { Router } from '@solidjs/router';
+import { clientOnly } from '@solidjs/start';
 import { FileRoutes } from '@solidjs/start/router';
 import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
 import { Suspense } from 'solid-js';
@@ -13,6 +14,12 @@ import { NavHandleLogin } from './components/nav.tsx';
 import { Toaster } from './components/ui/toast.ts';
 
 import './app.css';
+
+const ReloadPrompt = clientOnly(() =>
+  import('./components/reloadPrompt.ts').then((x) => ({
+    default: x.ReloadPrompt,
+  })),
+);
 
 // type UserAuth =
 //   | { state: "logged-in"; token: string; expiresAt: number }
@@ -137,6 +144,7 @@ export default function App() {
           >
             <ColorModeScript storageType={storageManager.type} />
             <ColorModeProvider storageManager={storageManager}>
+              <ReloadPrompt />
               <Toaster />
               <NavHandleLogin />
               {/* <UserTokenProvider> */}
