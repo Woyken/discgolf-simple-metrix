@@ -1,4 +1,4 @@
-import { useRegisterSw } from 'virtual:pwa-register/solid';
+import { useRegisterSW } from 'virtual:pwa-register/solid';
 import { toaster } from '@kobalte/core/toast';
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
@@ -11,7 +11,7 @@ export const ReloadPrompt: Component = () => {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
-  } = useRegisterSw({
+  } = useRegisterSW({
     onRegistered(r) {
       getLogger().log('SW Registered: ', r);
     },
