@@ -9,6 +9,15 @@ export default defineConfig({
         registerType: 'prompt',
         workbox: {
           globPatterns: ['**!(node_modules)/*.{js,wasm,css,html}'],
+          runtimeCaching: [
+            {
+              urlPattern: () => true,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'all-cache',
+              },
+            },
+          ],
         },
         includeAssets: ['**!(node_modules)/*'],
         manifest: {
