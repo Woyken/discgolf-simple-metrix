@@ -12,7 +12,7 @@ export default defineConfig({
           runtimeCaching: [
             {
               urlPattern: () => true,
-              handler: 'CacheFirst',
+              handler: 'NetworkFirst',
               options: {
                 cacheName: 'all-cache',
               },
