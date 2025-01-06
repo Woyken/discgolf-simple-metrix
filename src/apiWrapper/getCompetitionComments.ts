@@ -1,4 +1,5 @@
 import { query } from '@solidjs/router';
+import { queryOptions } from '@tanstack/solid-query';
 import { getDomParser } from './domParser.ts';
 import { discGolfMetrixUrl } from './urlBase.ts';
 
@@ -98,3 +99,16 @@ export const discGolfMetrixGetCompetitionComments = query(
   },
   'discGolfMetrixGetCompetitionComments',
 );
+
+export function getDiscGolfMetrixGetCompetitionCommentsQueryOptions(
+  competitionId: string,
+) {
+  return queryOptions({
+    queryKey: ['competition comments', competitionId],
+    queryFn: async () => {
+      const result = await discGolfMetrixGetCompetitionComments(competitionId);
+      return result;
+    },
+    throwOnError: true,
+  });
+}

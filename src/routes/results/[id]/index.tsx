@@ -8,6 +8,7 @@ import {
 } from '@tanstack/solid-table';
 import { type Accessor, For, Show, createMemo } from 'solid-js';
 import type { discGolfMetrixGetCompetitionThrows } from '~/apiWrapper/getCompetitionThrows';
+import { CommentsBox } from '~/components/CommentsBox';
 import { getCompetitionThrowsQueryOptions } from '~/components/mapbox/query/query';
 import { PlayerAvatar, PlayerAvatarFromName } from '~/components/playerAvatar';
 import { QueryBoundary } from '~/components/queryBoundary';
@@ -57,7 +58,7 @@ export default function TodoLoaderPage() {
       query={resultsQuery}
       loadingFallback={<div>Loading in suspense boundary</div>}
     >
-      {(results) => <ResultsPage results={results} />}
+      {(results) => <ResultsPage results={results} competitionId={params.id} />}
     </QueryBoundary>
     // <Suspense fallback={<div>LOADING...</div>}>
     // <Show when={a()}>{(results) => <ResultsPage results={results()} />}</Show>
@@ -68,6 +69,7 @@ export default function TodoLoaderPage() {
 
 function ResultsPage(props: {
   results: Awaited<ReturnType<typeof discGolfMetrixGetCompetitionThrows>>;
+  competitionId: string;
 }) {
   const [searchParams, setSearchParams] = useSearchParams<{
     groupId: string;
@@ -291,6 +293,7 @@ function ResultsPage(props: {
             </TableBody>
           </Table>
         </div>
+        <CommentsBox competitionId={props.competitionId} />
       </div>
     </main>
   );
