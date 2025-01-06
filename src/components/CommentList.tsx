@@ -2,6 +2,7 @@ import { For } from 'solid-js';
 import { Comment } from './Comment.tsx';
 
 type CommentType = {
+  id: string;
   author: string;
   avatar?: string;
   date: string;
@@ -9,14 +10,17 @@ type CommentType = {
   replies: CommentType[];
 };
 
-interface CommentListProps {
+export function CommentList(props: {
   comments: CommentType[];
-}
-
-export function CommentList({ comments }: CommentListProps) {
+  onAddReply: (parentId: string, content: string) => void;
+}) {
   return (
     <div class="space-y-4">
-      <For each={comments}>{(comment) => <Comment {...comment} />}</For>
+      <For each={props.comments}>
+        {(comment) => (
+          <Comment comment={comment} onAddReply={props.onAddReply} />
+        )}
+      </For>
     </div>
   );
 }

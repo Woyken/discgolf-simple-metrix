@@ -1,5 +1,10 @@
-import { query } from '@solidjs/router';
-import { queryOptions } from '@tanstack/solid-query';
+import { query, redirect } from '@solidjs/router';
+import {
+  createMutation,
+  queryOptions,
+  useQueryClient,
+} from '@tanstack/solid-query';
+import { getCookie } from 'vinxi/http';
 import { getDomParser } from './domParser.ts';
 import { discGolfMetrixUrl } from './urlBase.ts';
 
@@ -100,6 +105,36 @@ export const discGolfMetrixGetCompetitionComments = query(
   'discGolfMetrixGetCompetitionComments',
 );
 
+export const discGolfMetrixAddCompetitionComment = async (props: {
+  competitionId: string;
+  content: string;
+  replyTo?: string;
+}) => {
+  'use server';
+
+  const token = getCookie('token');
+  if (!token) return redirect('/login');
+
+  const formData = new URLSearchParams();
+  if (props.replyTo) formData.append('id', props.replyTo);
+  formData.append('comment', props.content);
+
+  const url = new URL(
+    `${encodeURIComponent(props.competitionId)}`,
+    discGolfMetrixUrl,
+  );
+  url.searchParams.set('view', 'comments');
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      cookie: token,
+    },
+    body: formData,
+    method: 'POST',
+  });
+  if (!response.ok) throw new Error('Adding comment failed');
+};
+
 export function getDiscGolfMetrixGetCompetitionCommentsQueryOptions(
   competitionId: string,
 ) {
@@ -111,4 +146,30 @@ export function getDiscGolfMetrixGetCompetitionCommentsQueryOptions(
     },
     throwOnError: true,
   });
+}
+
+export function discGolfMetrixGetCompetitionCommentsAddMutation() {
+  const queryClient = useQueryClient();
+  return createMutation(() => ({
+    mutationFn: async (
+      params: Parameters<typeof discGolfMetrixAddCompetitionComment>[0],
+    ) => {
+      const result = await discGolfMetrixAddCompetitionComment(params);
+      return result;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(
+        getDiscGolfMetrixGetCompetitionCommentsQueryOptions(
+          variables.competitionId,
+        ),
+      );
+    },
+    onError: (error, variables) => {
+      queryClient.invalidateQueries(
+        getDiscGolfMetrixGetCompetitionCommentsQueryOptions(
+          variables.competitionId,
+        ),
+      );
+    },
+  }));
 }
